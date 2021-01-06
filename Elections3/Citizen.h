@@ -24,7 +24,7 @@ public:
 	friend ostream& operator<<(ostream& os, const Citizen& dt);
 
 	/*Files: */
-	void save(ostream& out) const; 
+	void save(ostream& out) const;
 
 private:
 	const District* district;
