@@ -8,13 +8,13 @@ public:
 	RegularElection(istream& in); //load
 	RegularElection();
 	virtual ~RegularElection();
-	
+
 	/*Getters*/
 	const DistrictArr& getDistrictArr() const;
 	const District& getDistrict(int district_num)const;
 
 	/*Adders: */
-	int addDistrict(myString& name, int electors, DistrictType type);
+	void addDistrict(myString& name, int electors, DistrictType type);
 
 	/*Printers: */
 	void printDistricts() const;
@@ -22,7 +22,7 @@ public:
 
 
 	virtual ostream& printResults(ostream& os) const override;
-	bool checkDistrictExists(int district) const; //relevant only to RegularElection
+	void checkDistrictExists(int district) const; //relevant only to RegularElection
 	virtual void save(ostream& out) const;
 
 	virtual void sumElectors() override;
