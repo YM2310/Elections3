@@ -4,7 +4,7 @@
 class CitizenArr
 {
 public:
-	CitizenArr( int size = 1); 
+	CitizenArr(int size = 1);
 	CitizenArr(istream& in, District* dist);//for loading
 	CitizenArr(const CitizenArr&) = delete;
 	~CitizenArr();
@@ -12,11 +12,11 @@ public:
 	/*Getters*/
 	int getLogSize() const;
 	Citizen* getCitizenByID(const int id) const;
-	int verifyId(int id) const;// returnes if there's a citizen with this id within the arr, and if he voted
+	void verifyId(int id) const;// returnes if there's a citizen with this id within the arr, and if he voted
 
 	/*Adders*/
-	int addCitizenToArr(myString& _name, int _id, int _birth_year, District* district);// will call ctor citizen, logsize++, if () realsize - increasesize
-	int addCitizenToArr(Citizen* person);
+	void addCitizenToArr(myString& _name, int _id, int _birth_year, District* district);// will call ctor citizen, logsize++, if () realsize - increasesize
+	void addCitizenToArr(Citizen* person);
 
 
 	/*Operators*/
@@ -25,7 +25,7 @@ public:
 	void save(ostream& out) const;
 	void load(istream& in, District* dist);
 private:
-	void changeSize(int size); 
+	void changeSize(int size);
 	void doubleSize();
 	CitizenPtr* citizen_arr;
 	int log_size;
