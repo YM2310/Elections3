@@ -35,13 +35,11 @@ const District& RegularElection::getDistrict(int district_num) const
 	return district_arr.getDistrict(district_num);
 }
 
-int RegularElection::addDistrict(myString& name, int electors, DistrictType type)
+void RegularElection::addDistrict(myString& name, int electors, DistrictType type)
 {
 	int district_id = new_district_id;
-
 	party_arr.addDistrict(district_arr.addDistrict(name, district_id, electors, type));
 	new_district_id++;
-	return 200; //validates
 }
 
 void RegularElection::printDistricts() const
@@ -54,14 +52,14 @@ void RegularElection::printCitizens() const
 	cout << district_arr; //this is for printing all citizens
 }
 
-bool RegularElection::checkDistrictExists(int district) const
+void RegularElection::checkDistrictExists(int district) const
 {
 	for (int i = 0; i < district_arr.getLogSize(); i++)
 	{
 		if (district_arr[i].getId() == district)
-			return true;
+			return;
 	}
-	return false;
+	throw "District not found";
 }
 
 ostream& RegularElection::printResults(ostream& os) const
