@@ -18,5 +18,5 @@ void printParties(Election* elections);
 void vote(Election* elections);
 void results(Election* elections);
 void saveElections(const Election& elections);
-Election* loadElections(Election* elections=nullptr);
-bool checkDate(const myString& date);
+Election* loadElections(Election* elections = nullptr);
+void checkDate(const myString& date);
