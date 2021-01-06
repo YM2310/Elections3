@@ -47,6 +47,7 @@ const District& DistrictArr::getDistrict(int district_num) const
 			return *district_arr[i];
 		}
 	}
+	throw invalid_argument("No District with this ID");
 }
 
 District* DistrictArr::addDistrict(myString& name, int district_id, int electors, DistrictType type)// pay attention: when you create the new arr, you are creating a new DistrictPtr* and NOT DistritctArr.
@@ -183,14 +184,19 @@ const Citizen* DistrictArr::getCitizen(int id, int district_num)const
 				return district_arr[i]->getCitizen(id);
 			}
 		}
+		throw invalid_argument("No District with this ID");
 	}
 	const Citizen* get = nullptr;
 	for (int i = 0; i < log_size; i++) {
-		get = district_arr[i]->getCitizen(id);
-		if (get != nullptr)
+		try {
+			get = district_arr[i]->getCitizen(id);
 			return get;
+		}
+		catch (std::exception& ex) {
+
+		}
 	}
-	return nullptr;
+	throw invalid_argument("No citizen with this ID");
 }
 
 ostream& operator<<(ostream& os, const DistrictArr& arr)
