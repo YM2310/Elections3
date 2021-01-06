@@ -8,17 +8,27 @@ CitizenArr::CitizenArr(int size)
 {
 	log_size = 0;
 	real_size = size;
-	citizen_arr = new CitizenPtr[real_size];
+	try{
+		citizen_arr = new CitizenPtr[real_size];
+	}
+	catch (bad_alloc& ex){
+		throw;
+	}
 }
 
 CitizenArr::CitizenArr(istream& in, District* dist) //load
 {
-	in.read(rcastc(&log_size), sizeof(log_size));
-	real_size = log_size + 1;
-	citizen_arr = new CitizenPtr[real_size];
-	for (int i = 0; i < log_size; i++)
-	{
-		citizen_arr[i] = new Citizen(in, dist);
+	try{
+		in.read(rcastc(&log_size), sizeof(log_size));
+		real_size = log_size + 1;
+		citizen_arr = new CitizenPtr[real_size];
+		for (int i = 0; i < log_size; i++)
+		{
+			citizen_arr[i] = new Citizen(in, dist);
+		}
+	}
+	catch (bad_alloc& ex) {
+		throw; 
 	}
 }
 
@@ -39,7 +49,7 @@ Citizen* CitizenArr::getCitizenByID(const int id) const
 		if (citizen_arr[i]->getID() == id)
 			return (citizen_arr[i].getAddress());
 	}
-	return nullptr;
+	throw invalid_argument("No citizen with this id");
 }
 
 void CitizenArr::doubleSize()
@@ -47,40 +57,43 @@ void CitizenArr::doubleSize()
 	changeSize(real_size * 2);
 }
 
-int CitizenArr::addCitizenToArr(myString& _name, int _id, int _birth_year,District* district)
+void CitizenArr::addCitizenToArr(myString& _name, int _id, int _birth_year, District* district)
 {
 	if (log_size == real_size)
 		doubleSize();
-	citizen_arr[log_size].setPtr(new Citizen(_name, _id, _birth_year, district));
-	log_size++;
-	return 200;//validates
+	try {
+		citizen_arr[log_size].setPtr(new Citizen(_name, _id, _birth_year, district));
+		log_size++;
+	}
+	catch (bad_alloc& ex) {
+		throw;
+	}
 }
 
-int CitizenArr::addCitizenToArr(Citizen* person)
+void CitizenArr::addCitizenToArr(Citizen* person)
 {
 	for (int i = 0; i < log_size; i++)
 	{
 		if (citizen_arr[i]->getID() == person->getID())
-			return 100;// this citizen already exists
+			throw invalid_argument("This citizen already exists");// this citizen already exists
 	}
 	if (log_size == real_size)
 		doubleSize();
 	citizen_arr[log_size].setPtr(person);
 	log_size++;
-	return 200;//validates
 }
 
-int CitizenArr::verifyId(int id) const //to check if voted already
+void CitizenArr::verifyId(int id) const 
 {
 	int i;
 	for (i = 0; i < log_size; i++)
 	{
 		if (citizen_arr[i]->getID() == id) {
-			;
-			return 100;
+			return;// This citizen exists- no problem
 		}
 	}
-	return 400;
+	if (i == log_size)
+		throw invalid_argument("Could not find a citizen with this ID");
 }
 
 const CitizenArr& CitizenArr::operator=(const CitizenArr origin) //Asked although its not in use. 
@@ -111,9 +124,14 @@ void CitizenArr::load(istream& in, District* dist)
 
 	for (int i = 0; i < citizen_arr_size; i++)
 	{
-		citizen_arr[i].deleteCitizen();
-		Citizen* citizen = new Citizen(in, dist);
-		citizen_arr[i].setPtr(citizen);
+		try {
+			citizen_arr[i].deleteCitizen();
+			Citizen* citizen = new Citizen(in, dist);
+			citizen_arr[i].setPtr(citizen);
+		}
+		catch (bad_alloc& ex) {
+			throw;
+		}
 	}
 	log_size = citizen_arr_size;
 }
@@ -121,13 +139,18 @@ void CitizenArr::load(istream& in, District* dist)
 void CitizenArr::changeSize(int size)
 {
 	real_size = size;
-	CitizenPtr* tmp = new CitizenPtr[real_size];
-	for (int i = 0; i < log_size; i++)
-	{
-		tmp[i] = citizen_arr[i];
-		citizen_arr[i].setPtr(nullptr);
+	try {
+		CitizenPtr* tmp = new CitizenPtr[real_size];
+		for (int i = 0; i < log_size; i++)
+		{
+			tmp[i] = citizen_arr[i];
+			citizen_arr[i].setPtr(nullptr);
+		}
+		delete[] citizen_arr;// free the old arr
+		citizen_arr = tmp;
 	}
-
-	delete[] citizen_arr;// free the old arr
-	citizen_arr = tmp;
+	
+	catch (bad_alloc& ex) {
+		throw;
+	}
 }
