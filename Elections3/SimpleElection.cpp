@@ -21,14 +21,25 @@ SimpleElection::~SimpleElection()
 
 }
 
-int SimpleElection::addCitizen(myString& name, int id, int birthyear, int district_num)
+void SimpleElection::addCitizen(myString& name, int id, int birthyear, int district_num)
 {
-	return Election::addCitizen(name, id, birthyear, 0);
+	try {
+		Election::addCitizen(name, id, birthyear, 0);
+	}
+	catch (...)
+	{
+		throw;
+	}
 }
 
-int SimpleElection::addRep(int party_num, int id, int district_num)
+void SimpleElection::addRep(int party_num, int id, int district_num)
 {
-	return Election::addRep(party_num, id, 0);
+	try {
+		Election::addRep(party_num, id, 0);
+	}
+	catch (...){
+		throw;
+	}
 }
 
 ostream& SimpleElection::printResults(ostream& os) const
