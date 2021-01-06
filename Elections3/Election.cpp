@@ -26,7 +26,7 @@ Election::Election(istream& in) //load
 	in.read(rcastc(&new_party_id), sizeof(new_party_id));
 	in.read(rcastc(&new_district_id), sizeof(new_district_id));
 	district_arr.load(in);
-	party_arr.load(in,district_arr);
+	party_arr.load(in, district_arr);
 	district_arr.link(in, party_arr);
 }
 
@@ -55,20 +55,20 @@ void Election::setDate(myString date)
 	this->date = date;
 }
 
-
 void Election::printPartys() const
 {
 	cout << party_arr;
 }
 
-bool Election::checkPartyExists(int party) const
+void Election::checkPartyExists(int party) const
 {
 	for (int i = 0; i < party_arr.getLogSize(); i++)
 	{
 		if (party_arr[i].getPartyNum() == party)
-			return true;
+			return;
 	}
-	return false;
+	throw "Party not found";
+	throw "Party not found";
 }
 
 void Election::printCitizens() const
@@ -76,43 +76,55 @@ void Election::printCitizens() const
 	cout << district_arr; //this is for printing all citizens
 }
 
-int Election::addVote(int id, int party_num)
+void Election::addVote(int id, int party_num)
 {
-	return district_arr.addVote(party_num, id);
+	try {
+		district_arr.addVote(party_num, id);
+	}
+	catch (...) { //so we can also catch string& msg , exception& ex - every option will be displayed in the menu!
+		throw;
+	}
 }
 
-int Election::addCitizen(myString& name, int id, int birthyear, int district_num)
+void Election::addCitizen(myString& name, int id, int birthyear, int district_num)
 {
-	return district_arr.addCitizen(name, id, birthyear, district_num);
+	try {
+		checkBirthYear(birthyear);// throw an error if less than 18 years old
+		district_arr.addCitizen(name, id, birthyear, district_num);
+	}
+	catch (...) { 
+		throw;
+	}
 }
 
-int Election::addRep(int party_num, int rep_id, int district_num)
+void Election::addRep(int party_num, int rep_id, int district_num)
 {
-	const Citizen* rep_ptr = district_arr.getCitizen(rep_id);
-	if (rep_ptr == nullptr)
-		return 400; // citizen not found
-	return party_arr.addRep(party_num, district_num, rep_ptr);
+	try {
+		const Citizen* rep_ptr = district_arr.getCitizen(rep_id);
+		party_arr.addRep(party_num, district_num, rep_ptr);
+	}
+	catch (...) {
+		throw;
+	}
 }
 
-int Election::addParty(myString& name, int candidate_id)
+void Election::addParty(myString& name, int candidate_id)
 {
-	int party_id = new_party_id;
-	const Citizen* leader = district_arr.getCitizen(candidate_id);
-
-	if (leader == nullptr)
-		return 400; // citizen not found
-	if (party_arr.CheckIfRep(leader) == 200) {
+	try {
+		int party_id = new_party_id;
+		const Citizen* leader = district_arr.getCitizen(candidate_id); //try
+		party_arr.CheckIfRep(leader); // try
 		Party* new_party = party_arr.addParty(name, party_id, leader);
 		district_arr.addParty(new_party);
 		for (int i = 0; i < district_arr.getLogSize(); i++)
 		{
 			new_party->addDistrict(&district_arr[i]);
 		}
-		new_party_id++;
-		return 200; //validates OK
+			new_party_id++;
 	}
-	else
-		return 100; // already a representative
+	catch (...) {
+		throw;
+	}
 }
 
 void Election::sumElectors()
@@ -137,18 +149,18 @@ void Election::sumElectors()
 	}
 }
 
-bool Election::checkReps() const// check if there are enough representatives
+void Election::checkReps() const// check if there are enough representatives
 {
 	for (int i = 0; i < district_arr.getLogSize(); i++)//moves on districts
 	{
 		for (int n = 0; n < district_arr[i].getVotesArr().getLogSize(); n++)//on VotesArr
 		{
 			if (district_arr[i].getVotesArr()[n].reps_num > district_arr[i].getVotesArr()[n].party->getRepsArr().getRepsOfDistrict(district_arr[i].getId()).getLogSize()) {
-				return false;
+				throw "Not enough representatives";
 			}
 		}
 	}
-	return true;
+	return;
 }
 
 void Election::save(ostream& out) const
@@ -175,4 +187,12 @@ ostream& operator<<(ostream& os, const Election& elections)
 {
 	elections.printResults(os);
 	return os;
+}
+
+void Election::checkBirthYear(int _birthyear) const
+{
+	int year = 0;
+	year = (date[6] * 1000 + date[7] * 100 + date[8] * 10 + date[9]) - '0';
+	if (year - _birthyear < 18)
+		throw invalid_argument("Invalid birth year");
 }
