@@ -70,7 +70,12 @@ void SimpleElection::sumElectors() {
 
 void SimpleElection::save(ostream& out) const
 {
-	ElectionType type = ElectionType::SIMPLE;
-	out.write(rcastcc(&type), sizeof(type));
-	Election::save(out);
+	try {
+		ElectionType type = ElectionType::SIMPLE;
+		out.write(rcastcc(&type), sizeof(type));
+		Election::save(out);
+	}
+	catch (ostream::failure& ex) { // Is this one correct???
+		throw("Exception opening/writing/closing file");
+	}
 }
