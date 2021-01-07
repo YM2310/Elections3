@@ -113,9 +113,14 @@ ostream& RegularElection::printResults(ostream& os) const
 
 void RegularElection::save(ostream& out) const
 {
-	ElectionType type = ElectionType::REGULAR;
-	out.write(rcastcc(&type), sizeof(type));
-	Election::save(out);
+	try {
+		ElectionType type = ElectionType::REGULAR;
+		out.write(rcastcc(&type), sizeof(type));
+		Election::save(out);
+	}
+	catch (ostream::failure& ex) { 
+		throw("Exception opening/writing/closing file");
+	}
 }
 
 void RegularElection::sumElectors() {
