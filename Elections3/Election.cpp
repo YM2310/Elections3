@@ -22,12 +22,17 @@ Election::Election()
 
 Election::Election(istream& in) //load
 {
-	date.load(in);
-	in.read(rcastc(&new_party_id), sizeof(new_party_id));
-	in.read(rcastc(&new_district_id), sizeof(new_district_id));
-	district_arr.load(in);
-	party_arr.load(in, district_arr);
-	district_arr.link(in, party_arr);
+	try {
+		date.load(in);
+		in.read(rcastc(&new_party_id), sizeof(new_party_id));
+		in.read(rcastc(&new_district_id), sizeof(new_district_id));
+		district_arr.load(in);
+		party_arr.load(in, district_arr);
+		district_arr.link(in, party_arr);
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 Election::~Election()
@@ -165,22 +170,32 @@ void Election::checkReps() const// check if there are enough representatives
 
 void Election::save(ostream& out) const
 {
-	date.save(out);
-	out.write(rcastcc(&new_party_id), sizeof(new_party_id));
-	out.write(rcastcc(&new_district_id), sizeof(new_district_id));
-	district_arr.saveDistricts(out);
-	party_arr.save(out);
-	district_arr.saveVotes(out);
+	try {
+		date.save(out);
+		out.write(rcastcc(&new_party_id), sizeof(new_party_id));
+		out.write(rcastcc(&new_district_id), sizeof(new_district_id));
+		district_arr.saveDistricts(out);
+		party_arr.save(out);
+		district_arr.saveVotes(out);
+	}
+	catch (ostream::failure& ex) { 
+		throw("Exception opening/writing/closing file");
+	}
 }
 
 void Election::load(istream& in)
 {
-	date.load(in);
-	in.read(rcastc(&new_party_id), sizeof(new_party_id));
-	in.read(rcastc(&new_district_id), sizeof(new_district_id));
-	district_arr.load(in);
-	party_arr.load(in, district_arr);
-	district_arr.link(in, party_arr);
+	try {
+		date.load(in);
+		in.read(rcastc(&new_party_id), sizeof(new_party_id));
+		in.read(rcastc(&new_district_id), sizeof(new_district_id));
+		district_arr.load(in);
+		party_arr.load(in, district_arr);
+		district_arr.link(in, party_arr);
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 ostream& operator<<(ostream& os, const Election& elections)
