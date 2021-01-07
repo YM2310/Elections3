@@ -284,40 +284,70 @@ void results(Election* elections) {
 }
 
 void saveElections(const Election& elections) {
-	myString name;
-	cout << "Please enter filename" << endl;
-	cin >> name;
-	ofstream outfile(&name[0], ios::binary);
-	if (typeid(elections) == typeid(SimpleElection)) {
-		ElectionType type = ElectionType::SIMPLE;
-		outfile.write(rcastcc(&type), sizeof(ElectionType::SIMPLE));
+	try {
+		myString name;
+		cout << "Please enter filename" << endl;
+		cin >> name;
+		ofstream outfile(&name[0], ios::binary);
+		if (typeid(elections) == typeid(SimpleElection)) {
+			ElectionType type = ElectionType::SIMPLE;
+			outfile.write(rcastcc(&type), sizeof(ElectionType::SIMPLE));
+		}
+		else if (typeid(elections) == typeid(RegularElection)) {
+			ElectionType type = ElectionType::REGULAR;
+			outfile.write(rcastcc(&type), sizeof(ElectionType::REGULAR));
+		}
+		elections.save(outfile);
+		outfile.close();
 	}
-	else if (typeid(elections) == typeid(RegularElection)) {
-		ElectionType type = ElectionType::REGULAR;
-		outfile.write(rcastcc(&type), sizeof(ElectionType::REGULAR));
+	catch (ostream::failure& ex) {
+		cout << "ERROR: " << ex.what() << endl;
 	}
-	elections.save(outfile);
-	outfile.close();
+	catch (bad_alloc& ex) {
+		cout << "ERROR: " << ex.what() << endl;
+		exit(1);
+	}
+	catch (exception& ex) {
+		cout << "ERROR: " << ex.what() << endl;
+	}
+	catch (string& msg) {
+		cout << "ERROR: " << msg << endl;
+	}
 }
 
-Election* loadElections(Election* election) {
-	myString name;
-	cout << "enter filename" << endl;
-	cin >> name;
-	ifstream infile(&name[0], ios::binary);
-	delete election;
-	ElectionType type;
-	Election* new_elections = nullptr;
-	infile.read(rcastc(&type), sizeof(type));
-	if (type == ElectionType::REGULAR) {
-		new_elections = new RegularElection(infile);
+Election* loadElections(Election * election) {
+	try {
+		myString name;
+		cout << "enter filename" << endl;
+		cin >> name;
+		ifstream infile(&name[0], ios::binary);
+		delete election;
+		ElectionType type;
+		Election* new_elections = nullptr;
+		infile.read(rcastc(&type), sizeof(type));
+		if (type == ElectionType::REGULAR) {
+			new_elections = new RegularElection(infile);
 
+		}
+		else if (type == ElectionType::SIMPLE) {
+			new_elections = new SimpleElection(infile);
+		}
+		infile.close();
+		return new_elections;
+		}
+	catch (istream::failure& ex) {
+		cout << "ERROR: " << ex.what() << endl;
 	}
-	else if (type == ElectionType::SIMPLE) {
-		new_elections = new SimpleElection(infile);
+	catch (bad_alloc& ex) {
+		cout << "ERROR: " << ex.what() << endl;
+		exit(1);
 	}
-	infile.close();
-	return new_elections;
+	catch (exception& ex) {
+		cout << "ERROR: " << ex.what() << endl;
+	}
+	catch (string& msg) {
+		cout << "ERROR: " << msg << endl;
+	}
 }
 
 void checkDate(const myString& date)
