@@ -30,6 +30,9 @@ CitizenArr::CitizenArr(istream& in, District* dist) //load
 	catch (bad_alloc& ex) {
 		throw; 
 	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 CitizenArr::~CitizenArr()
@@ -111,35 +114,45 @@ const CitizenArr& CitizenArr::operator=(const CitizenArr origin) //Asked althoug
 
 void CitizenArr::save(ostream& out) const
 {
-	out.write(rcastcc(&log_size), sizeof(log_size));
-	for (int i = 0; i < log_size; i++)
-		citizen_arr[i]->save(out);
+	try {
+		out.write(rcastcc(&log_size), sizeof(log_size));
+		for (int i = 0; i < log_size; i++)
+			citizen_arr[i]->save(out);
+	}
+	catch (ostream::failure& ex) {
+		throw("Exception opening/writing/closing file");
+	}
 }
 
 void CitizenArr::load(istream& in, District* dist)
 {
-	int citizen_arr_size;
-	in.read(rcastc(&citizen_arr_size), sizeof(int));
-	changeSize(citizen_arr_size);
+	try {
+		int citizen_arr_size;
+		in.read(rcastc(&citizen_arr_size), sizeof(int));
+		changeSize(citizen_arr_size);
 
-	for (int i = 0; i < citizen_arr_size; i++)
-	{
-		try {
-			citizen_arr[i].deleteCitizen();
-			Citizen* citizen = new Citizen(in, dist);
-			citizen_arr[i].setPtr(citizen);
+		for (int i = 0; i < citizen_arr_size; i++)
+		{
+			try {
+				citizen_arr[i].deleteCitizen();
+				Citizen* citizen = new Citizen(in, dist);
+				citizen_arr[i].setPtr(citizen);
+			}
+			catch (bad_alloc& ex) {
+				throw;
+			}
 		}
-		catch (bad_alloc& ex) {
-			throw;
-		}
+		log_size = citizen_arr_size;
 	}
-	log_size = citizen_arr_size;
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 void CitizenArr::changeSize(int size)
 {
-	real_size = size;
 	try {
+		real_size = size;
 		CitizenPtr* tmp = new CitizenPtr[real_size];
 		for (int i = 0; i < log_size; i++)
 		{
