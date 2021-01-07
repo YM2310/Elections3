@@ -28,11 +28,16 @@ Citizen::Citizen()
 
 Citizen::Citizen(istream& in, District* dist) //load
 {
-	this->district = dist;
-	name.load(in);
-	in.read(rcastc(&id), sizeof(id));
-	in.read(rcastc(&birth_year), sizeof(birth_year));
-	in.read(rcastc(&voted), sizeof(voted));
+	try {
+		this->district = dist;
+		name.load(in);
+		in.read(rcastc(&id), sizeof(id));
+		in.read(rcastc(&birth_year), sizeof(birth_year));
+		in.read(rcastc(&voted), sizeof(voted));
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 Citizen::~Citizen()
@@ -77,8 +82,13 @@ ostream& operator<<(ostream& os, const Citizen& citizen) // to print citizen
 
 void Citizen::save(ostream& out) const
 {
-	name.save(out);
-	out.write(rcastcc(&id), sizeof(id));
-	out.write(rcastcc(&birth_year), sizeof(birth_year));
-	out.write(rcastcc(&voted), sizeof(voted));
+	try {
+		name.save(out);
+		out.write(rcastcc(&id), sizeof(id));
+		out.write(rcastcc(&birth_year), sizeof(birth_year));
+		out.write(rcastcc(&voted), sizeof(voted));
+	}
+	catch (ostream::failure& ex) {
+		throw("Exception opening/writing/closing file");
+	}
 }
