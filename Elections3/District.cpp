@@ -1,10 +1,9 @@
 #include "District.h"
 #include "PartyArr.h"
 #include "CitizenArr.h"
-#include "myString.h"
 #include "DistrictVotes.h"
 
-District::District(myString& _name, int _id, int _electors)
+District::District(string& _name, int _id, int _electors)
 {
 	id = _id;
 	electors = _electors;
@@ -19,9 +18,16 @@ District::District(istream& in) //load
 	in.read(rcastc(&electors), sizeof(electors));
 	in.read(rcastc(&total_votes), sizeof(total_votes));
 	in.read(rcastc(&voting_percent), sizeof(voting_percent));
-	name.load(in);
-	citizen_arr.load(in,this);
-
+	in.read(rcastc(&name), sizeof(name));
+	//update citizen_arr
+	int log_size;
+	in.read(rcastc(&log_size), sizeof(log_size));
+	for (int i = 0; i < log_size; i++)
+	{
+		Citizen* citizen = new Citizen(in, this);
+		citizen_arr.insert(pair<int, Citizen*>(citizen->getID(), citizen));
+	}
+	//citizen_arr.load(in, this);
 }
 
 
@@ -34,7 +40,7 @@ District::District()//new- only for init purposes (fix from 1st project)
 	total_votes = 0;
 }
 
-const myString& District::getName() const
+const string& District::getName() const
 {
 	return name;
 }
@@ -51,12 +57,12 @@ int District::getElectors() const
 
 float District::getVotingPercentage() const
 {
-	return static_cast<float>(total_votes) * 100 / citizen_arr.getLogSize();
+	return static_cast<float>(total_votes) * 100 / citizen_arr.size();
 }
 
 const Citizen* District::getCitizen(int id) const
 {
-	return citizen_arr.getCitizenByID(id);
+	return citizen_arr.find(id)->second;
 }
 
 int District::getTotalVotes() const
@@ -64,7 +70,7 @@ int District::getTotalVotes() const
 	return total_votes;
 }
 
-bool District::setName(const myString& _name)
+bool District::setName(const string& _name)
 {
 	name = _name;
 	return true;
@@ -82,14 +88,17 @@ bool District::setElectors(int _electors)
 	return true;
 }
 
-int District::addCitizen(myString& name, int id, int birthyear)
+void District::addCitizen(string& name, int id, int birthyear)
 {
-	return citizen_arr.addCitizenToArr(name, id, birthyear, this);
+	Citizen* citizen = new Citizen(name, id, birthyear, this);
+	citizen_arr.insert(pair<int, Citizen*>(id, citizen));
+	//return citizen_arr.addCitizenToArr(name, id, birthyear, this);
 }
 
-int District::addCitizen(Citizen* citizen)
+void District::addCitizen(Citizen* citizen)
 {
-	return citizen_arr.addCitizenToArr(citizen);
+	citizen_arr.insert(pair<int, Citizen*>(id, citizen));
+	//return citizen_arr.addCitizenToArr(citizen);
 }
 
 void District::addParty(const Party* partynum)
@@ -99,7 +108,7 @@ void District::addParty(const Party* partynum)
 
 int District::addVote(int party_num, int id)
 {
-	Citizen* citizen = citizen_arr.getCitizenByID(id);
+	Citizen* citizen = citizen_arr.find(id)->second;
 	if (citizen == nullptr)
 		return 400; //No such citizen
 	if (citizen->getIfVoted())
@@ -109,7 +118,6 @@ int District::addVote(int party_num, int id)
 	votes_arr.addVote(party_num);
 	total_votes++;
 	return 200;
-
 }
 
 int District::addRep(int party_num)
@@ -117,7 +125,7 @@ int District::addRep(int party_num)
 	return votes_arr.addRep(party_num);
 }
 
-float District::calcVotingPercent() 
+float District::calcVotingPercent()
 {
 	return voting_percent;
 }
@@ -146,7 +154,7 @@ void District::calculateReps()
 	votes_arr.bubbleReminder(votes_per_rep, reps_left);
 	for (int i = 0; i < reps_left; i++)
 	{
-		votes_arr[i% votes_arr.getLogSize()].reps_num++;// mod so it will go back to 1 if more reps left than parties exist
+		votes_arr[i % votes_arr.getLogSize()].reps_num++;// mod so it will go back to 1 if more reps left than parties exist
 	}
 	votes_arr.qSort();
 }
@@ -157,9 +165,15 @@ void District::save(ostream& out) const
 	out.write(rcastcc(&electors), sizeof(electors));
 	out.write(rcastcc(&total_votes), sizeof(total_votes));
 	out.write(rcastcc(&voting_percent), sizeof(voting_percent));
+	out.write(rcastcc(&name), sizeof(name));
+	//citizen_arr.save(out);
+	int log_size = citizen_arr.size();
+	out.write(rcastcc(&log_size), sizeof(log_size));
+	for (pair<int, Citizen*> citizen : citizen_arr)
+	{
+		citizen.second->save(out);
+	}
 
-	name.save(out);
-	citizen_arr.save(out);
 }
 
 void District::saveVotes(ostream& out) const
@@ -170,9 +184,7 @@ void District::saveVotes(ostream& out) const
 
 void District::link(istream& in, const PartyArr& party_map)
 {
-
 	votes_arr.load(in, party_map);
-	
 }
 
 void District::load(istream& in)
@@ -181,8 +193,15 @@ void District::load(istream& in)
 	in.read(rcastc(&electors), sizeof(electors));
 	in.read(rcastc(&total_votes), sizeof(total_votes));
 	in.read(rcastc(&voting_percent), sizeof(voting_percent));
-	name.load(in);
-	citizen_arr.load(in, this);
+	in.read(rcastc(&name), sizeof(name));
+	//load citizen_arr
+	int log_size;
+	in.read(rcastc(&log_size), sizeof(log_size));
+	for (int i = 0; i < log_size; i++)
+	{
+		Citizen* citizen = new Citizen(in, this);
+		citizen_arr.insert(pair<int, Citizen*>(citizen->getID(), citizen));
+	}
 }
 
 
@@ -196,8 +215,7 @@ int District::getVotesOfParty(int party_num) const
 	return votes_arr.getVotes(party_num);
 }
 
-
-const CitizenArr& District::getCitizenArr() const
+const map<int, Citizen*> District::getCitizenArr() const
 {
 	return citizen_arr;
 }
