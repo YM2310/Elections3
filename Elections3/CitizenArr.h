@@ -1,5 +1,6 @@
 #pragma once
 #include "CitizenPtr.h"
+#include <map>
 
 class CitizenArr
 {
@@ -10,24 +11,18 @@ public:
 	~CitizenArr();
 
 	/*Getters*/
-	int getLogSize() const;
-	Citizen* getCitizenByID(const int id) const;
 	void verifyId(int id) const;// returnes if there's a citizen with this id within the arr, and if he voted
 
 	/*Adders*/
-	void addCitizenToArr(myString& _name, int _id, int _birth_year, District* district);// will call ctor citizen, logsize++, if () realsize - increasesize
+	void addCitizenToArr(string& _name, int _id, int _birth_year, District* district);// will call ctor citizen, logsize++, if () realsize - increasesize
 	void addCitizenToArr(Citizen* person);
 
 
 	/*Operators*/
-	const Citizen& operator[](int i)const { return *citizen_arr[i]; } //returns the actual citizen, good for printing
 	const CitizenArr& operator=(const CitizenArr origin);
 	void save(ostream& out) const;
 	void load(istream& in, District* dist);
-private:
-	void changeSize(int size);
-	void doubleSize();
-	CitizenPtr* citizen_arr;
-	int log_size;
-	int real_size;
+
+	//STL://
+	map <int, Citizen*> citizen_map; //int= id of citizen
 };
