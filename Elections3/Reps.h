@@ -1,5 +1,6 @@
 #pragma once
 #include "citizenPtr.h"
+#include <map>
 
 class District;
 class DistrictArr;
@@ -14,20 +15,18 @@ public:
 	void doubleSize();
 	void changeSize(int new_size);
 	int addCitizenToArr(const Citizen* person);
-	myString getNameOfRep(int idx) const;
+	string getNameOfRep(int idx) const;
 	int getIDRep(int idx) const;
-        
+
 	void setDistrict(const District* district);
 
 	void save(ostream& out) const;
 	void load(istream& in, const DistrictArr& district_map);
-
-	const Citizen& operator[](int i)const { return *citizen_arr[i]; }
 	Reps& operator=(const Reps& origin);
-	
+
 private:
 	const District* distrtict_num;
-	const Citizen** citizen_arr;
+	map<int, Citizen*> citizen_arr; //int= id of citizen
 	int log_size;
 	int real_size;
 };
