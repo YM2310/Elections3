@@ -3,10 +3,10 @@
 #define rcastcc reinterpret_cast<const char*> 
 enum class ElectionType { REGULAR = 1, SIMPLE = 2 };
 
-SimpleElection::SimpleElection(myString& _date, int electors)
+SimpleElection::SimpleElection(string& _date, int electors)
 	: Election(_date)
 {
-	myString name = "No Districts in simple elections";
+	string name = "No Districts in simple elections";
 	district_arr.addDistrict(name, 0, electors, DistrictType::RELATIVE); //2== RelativeDistrict
 }
 
@@ -21,7 +21,7 @@ SimpleElection::~SimpleElection()
 
 }
 
-void SimpleElection::addCitizen(myString& name, int id, int birthyear, int district_num)
+void SimpleElection::addCitizen(string& name, int id, int birthyear, int district_num)
 {
 	try {
 		Election::addCitizen(name, id, birthyear, 0);
