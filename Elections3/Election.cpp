@@ -97,7 +97,7 @@ void Election::addCitizen(string& name, int id, int birthyear, int district_num)
 		checkBirthYear(birthyear);// throw an error if less than 18 years old
 		district_arr.addCitizen(name, id, birthyear, district_num);
 	}
-	catch (...) { 
+	catch (...) {
 		throw;
 	}
 }
@@ -121,11 +121,11 @@ void Election::addParty(string& name, int candidate_id)
 		party_arr.CheckIfRep(leader); // try
 		Party* new_party = party_arr.addParty(name, party_id, leader);
 		district_arr.addParty(new_party);
-		for (int i = 0; i < district_arr.getLogSize(); i++)
+		for (auto dist: district_arr.district_map)
 		{
-			new_party->addDistrict(&district_arr[i]);
+			new_party->addDistrict(dist.second);
 		}
-			new_party_id++;
+		new_party_id++;
 	}
 	catch (...) {
 		throw;
@@ -135,12 +135,12 @@ void Election::addParty(string& name, int candidate_id)
 void Election::sumElectors()
 {
 	party_arr.initElectors();
-	int winner, electors, party_votes;
+	int winner, electors, party_votes, i = 0;
 	DistrictVotesArr electors_arr;
-	for (int i = 0; i < district_arr.getLogSize(); i++) // within dist_arr
+	for (auto dist: district_arr.district_map) // within dist_arr
 	{
-		district_arr[i].calculateReps();
-		electors_arr = district_arr[i].getWinner();
+		dist.second->calculateReps();
+		electors_arr = dist.second->getWinner();
 		for (int j = 0; j < electors_arr.getLogSize(); j++) { //within dist_votes_arr
 			party_arr.addElectoralVotes(electors_arr[j].party->getPartyNum(), electors_arr[j].reps_num);
 		}
@@ -148,19 +148,20 @@ void Election::sumElectors()
 		{
 			if (i == 0)//init the votes before adding
 				party_arr[j].updateVotes(0);
-			party_votes = district_arr[i].getVotesOfParty(party_arr[j].getPartyNum());
+			party_votes = dist.second->getVotesOfParty(party_arr[j].getPartyNum());
 			party_arr[j].updateVotes(party_votes + party_arr[j].getVotes());
 		}
+		i++;
 	}
 }
 
 void Election::checkReps() const// check if there are enough representatives
 {
-	for (int i = 0; i < district_arr.getLogSize(); i++)//moves on districts
+	for (auto dist : district_arr.district_map)//moves on districts
 	{
-		for (int n = 0; n < district_arr[i].getVotesArr().getLogSize(); n++)//on VotesArr
+		for (int n = 0; n < dist.second->getVotesArr().getLogSize(); n++)//on VotesArr
 		{
-			if (district_arr[i].getVotesArr()[n].reps_num > district_arr[i].getVotesArr()[n].party->getRepsArr().getRepsOfDistrict(district_arr[i].getId()).getLogSize()) {
+			if (dist.second->getVotesArr()[n].reps_num > dist.second->getVotesArr()[n].party->getRepsArr().getRepsOfDistrict(dist.second->getId()).getLogSize()) {
 				throw "Not enough representatives";
 			}
 		}
@@ -178,7 +179,7 @@ void Election::save(ostream& out) const
 		party_arr.save(out);
 		district_arr.saveVotes(out);
 	}
-	catch (ostream::failure& ex) { 
+	catch (ostream::failure& ex) {
 		throw("Exception opening/writing/closing file");
 	}
 }
