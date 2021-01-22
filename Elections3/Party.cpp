@@ -1,7 +1,7 @@
 #include "Party.h"
 #include "DistrictArr.h"
 
-Party::Party(myString _name, const Citizen* _leader, int _party_num)
+Party::Party(string _name, const Citizen* _leader, int _party_num)
 {
 	party_num = _party_num;
 	name = _name;
@@ -18,7 +18,7 @@ Party::Party(istream& in, DistrictArr& district_map) //load
 	int leader_id;
 	in.read(rcastc(&leader_id), sizeof(int));// ignore leader_id
 	leader = district_map.getCitizen(leader_id);
-	name.load(in);
+	in.read(rcastc(&name), sizeof(name));
 
 	reps_by_district.load(in, district_map);
 }
@@ -53,7 +53,7 @@ int Party::getElectorsWon() const
 	return electors_won;
 }
 
-const myString& Party::getName() const
+const string& Party::getName() const
 {
 	return name;
 }
@@ -93,7 +93,7 @@ void Party::save(ostream& out)
 	out.write(rcastcc(&electors_won), sizeof(electors_won));
 	int leader_id = leader->getID();
 	out.write(rcastcc(&leader_id), sizeof(int));
-	name.save(out);
+	out.write(rcastcc(&name), sizeof(name));
 	reps_by_district.save(out);
 }
 
@@ -106,7 +106,7 @@ ostream& operator<<(ostream& os, const Party& party)
 	for (int i = 0; i < party.getRepsArr().getLogSize(); i++)
 	{
 		os << " Representatives for District Number: " << party.getRepsArr()[i].getDistrictNum() << endl << "  ";
-		for (int j = 0; j < party.getRepsArr()[i].getLogSize(); j++)
+		for (int j = 0; j < party.getRepsArr()[i].getLogSize(); j++)// MAYBE HAVE AN ITR ON THE CITIZEN MAP?
 			os << j + 1 << ")" << party.getRepsArr()[i].getNameOfRep(j) << "  ";
 		os << endl;
 	}
