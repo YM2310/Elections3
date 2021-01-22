@@ -4,7 +4,7 @@
 
 class WTADistrict : public District {
 public:
-	WTADistrict(myString& _name, int _id, int _electors);
+	WTADistrict(string& _name, int _id, int _electors);
 	WTADistrict(istream& in); //load
 	virtual ~WTADistrict();
 	DistrictVotesArr getWinner() const override;
