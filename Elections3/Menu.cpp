@@ -1,7 +1,8 @@
 #include "Menu.h"
 #include <iostream>
 #include <fstream>
-#include "myString.h"
+//#include "myString.h"
+#include <string>
 #include <typeinfo>
 using namespace std;
 enum class ElectionType { REGULAR = 1, SIMPLE = 2 };
@@ -23,7 +24,7 @@ int preMenu() //The first menu- first we ask if the use wants to load / create n
 	if (choice == 1) { //New Election
 		cout << "please enter date: " << endl;
 		cin >> day >> month >> year;
-		myString date = itos(day) + "/" + itos(month) + "/" + itos(year);
+		string date = to_string(day) + "/" + to_string(month) + "/" + to_string(year);
 		cout << "Please enter the type of election:" << endl <<
 			"1- Regular Election" << endl << "2- Simple Election" << endl;
 		choice = getChoice();
@@ -47,9 +48,9 @@ int preMenu() //The first menu- first we ask if the use wants to load / create n
 }
 
 
-myString dateInput() {
+string dateInput() {
 	try {
-		myString date;
+		string date;
 		cout << "Please enter date of election (format: dd/mm/yyyy ): " << endl;
 		cin >> date;
 		checkDate(date);//catch: "Not a valid date. Please enter date of election (format: dd/mm/yyyy ): "
@@ -131,7 +132,7 @@ void superSwitch(int choice, Election* elections) {
 }
 
 void addDistrict(Election* elections) { //add District- only to Regular Election!
-	myString name;
+	string name;
 	int num_of_reps = 0, type;
 	cout << "Please enter district's name: " << endl;
 	cin >> name;
@@ -160,7 +161,7 @@ void addDistrict(Election* elections) { //add District- only to Regular Election
 
 }
 void addCitizen(Election* elections) {
-	myString name;
+	string name;
 	int id, birth_year, district_num, res;
 	cout << "Please enter name: " << endl;
 	cin >> name;
@@ -187,7 +188,7 @@ void addCitizen(Election* elections) {
 }
 
 void addParty(Election* elections) {
-	myString name;
+	string name;
 	int id_pres, res;
 	cout << "Please enter name of party: " << endl;
 	cin >> name;
@@ -285,7 +286,7 @@ void results(Election* elections) {
 
 void saveElections(const Election& elections) {
 	try {
-		myString name;
+		string name;
 		cout << "Please enter filename" << endl;
 		cin >> name;
 		ofstream outfile(&name[0], ios::binary);
@@ -317,7 +318,7 @@ void saveElections(const Election& elections) {
 
 Election* loadElections(Election * election) {
 	try {
-		myString name;
+		string name;
 		cout << "enter filename" << endl;
 		cin >> name;
 		ifstream infile(&name[0], ios::binary);
@@ -350,7 +351,7 @@ Election* loadElections(Election * election) {
 	}
 }
 
-void checkDate(const myString& date)
+void checkDate(const string& date)
 {
 	if (date[2] != '/' || date[5] != '/')
 		throw invalid_argument("Not a valid date. Please enter date of election (format: dd/mm/yyyy ): ");
