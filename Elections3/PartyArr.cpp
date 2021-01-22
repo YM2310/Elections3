@@ -42,7 +42,7 @@ Party& PartyArr::getParty(int partyNum) const
 	}
 }
 
-Party* PartyArr::addParty(myString& partyName, int _partyNum, const Citizen* leader)
+Party* PartyArr::addParty(string& partyName, int _partyNum, const Citizen* leader)
 {
 	if (log_size == real_size)
 		doubleSize();
@@ -127,14 +127,14 @@ void PartyArr::addVotes(int party_num, int votes)
 int PartyArr::partition(PartyArr& arr, int left, int right)
 {
 	Party* tmp;
-	Party& pivot = arr[right]; 
-	int i = (left - 1);  
+	Party& pivot = arr[right];
+	int i = (left - 1);
 
-	for (int j = left; j <right ; j++)
+	for (int j = left; j < right; j++)
 	{
 		if (arr[j].getElectorsWon() > pivot.getElectorsWon())
 		{
-			i++; 
+			i++;
 			tmp = &arr[i];
 			arr.party_arr[i].setPtr(&arr[j]);
 			arr.party_arr[j].setPtr(tmp);
@@ -151,8 +151,8 @@ int PartyArr::partition(PartyArr& arr, int left, int right)
 			}
 		}
 	}
-	tmp = &arr[i+1];
-	arr.party_arr[i+1].setPtr(&arr[right]);
+	tmp = &arr[i + 1];
+	arr.party_arr[i + 1].setPtr(&arr[right]);
 	arr.party_arr[right].setPtr(tmp);
 	return (i + 1);
 }
@@ -191,7 +191,7 @@ void PartyArr::load(istream& in, DistrictArr& district_map)
 	}
 }
 
-void PartyArr::initElectors() 
+void PartyArr::initElectors()
 {
 	for (int i = 0; i < log_size; i++)
 	{
