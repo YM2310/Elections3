@@ -5,7 +5,7 @@ class DistrictArr;
 class Party
 {
 public:
-	Party(myString name, const Citizen* leader, int party_num);
+	Party(string name, const Citizen* leader, int party_num);
 	Party(istream& in, DistrictArr& district_map); //load
 
 	/*Getters: */
@@ -15,7 +15,7 @@ public:
 	const Citizen& getLeader() const;
 	const RepsArr& getRepsArr() const;
 	const Reps& getReps(int district_num) const;
-	const myString& getName() const;
+	const string& getName() const;
 
 	/*Adders*/
 	void addElectors(int won);
@@ -34,8 +34,7 @@ private:
 	int party_num;
 	int votes_got;
 	int electors_won;
-	const Citizen* leader; 
-	myString name; //name of party
+	const Citizen* leader;
+	string name; //name of party
 	RepsArr reps_by_district;// array of arrays of reps, each array is a district
-
 };
