@@ -41,9 +41,7 @@ public:
 		template <bool _is_const = is_const, class = std::enable_if_t<_is_const>>
 		base_iterator(const base_iterator<false>& other) : _da(other._da), _i(other._i) {}
 
-		int getPosition() {
-			return _i;
-		}
+
 		// comparison with another iterator
 		bool operator==(const base_iterator& other) const {
 			return (_da == other._da) && (_i == other._i);
@@ -69,6 +67,7 @@ public:
 			++_i;
 			return temp;
 		}
+
 		base_iterator& operator--() {
 			--_i;
 			return *this;
@@ -79,10 +78,23 @@ public:
 			return temp;
 		}
 
+		base_iterator& operator+(int add) {
+			_i += add;
+			return *this;
+		}
+		base_iterator& operator-(int sub) {
+			base_iterator temp(*this);
+			temp._i = _i - sub;
+			return temp;
+		}
+		int operator-(base_iterator& sub) {
+			return _i - sub._i;
+		}
+
 
 	private:
 		ds_type* _da;
-		int			_i;
+		int		_i;
 	};
 	using iterator = base_iterator<false>;
 	using const_iterator = base_iterator<true>;
@@ -185,7 +197,7 @@ public:
 		return iterator(*this, 0);
 	}
 
-	const_iterator rbegin() {
+	iterator rbegin() {
 		return iterator(*this, _logicalSize - 1);
 	}
 

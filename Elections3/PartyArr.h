@@ -34,6 +34,43 @@ public:
 	friend ostream& operator<<(ostream& os, const PartyArr& arr);
 	Party& operator[](int i) { return *party_arr[i]; }
 	const Party& operator[](int i)const { return  party_arr[i]; }
+
+
+	/*Compares*/
+	class CmpElectors {
+	public:
+		bool operator()(const Party& party_1, const Party& party_2) {
+			if (party_1.getElectorsWon() > party_2.getElectorsWon())
+				return true;
+			if (party_1.getElectorsWon() == party_2.getElectorsWon())
+				if (party_1.getPartyNum() < party_2.getPartyNum())
+					return true;
+			return false;
+		}
+	};
+	class CmpVotes {
+	public:
+		bool operator()(const Party& party_1, const Party& party_2) {
+			if (party_1.getVotes() > party_2.getVotes())
+				return true;
+			if (party_1.getVotes() == party_2.getVotes())
+				if (party_1.getPartyNum() < party_2.getPartyNum())
+					return true;
+			return false;
+		}
+	};
+
+	class CmpVotes {
+	public:
+		bool operator()(const Party& party_1, const Party& party_2) {
+			if (party_1.getElectorsWon() > party_2.getElectorsWon())
+				return true;
+			if (party_1.getElectorsWon() == party_2.getElectorsWon())
+				if (party_1.getPartyNum() < party_2.getPartyNum())
+					return true;
+			return false;
+		}
+	};
 	
 private:
 	DynamicArray<PartyPtr> party_arr;
