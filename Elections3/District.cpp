@@ -1,6 +1,7 @@
 #include "District.h"
 #include "PartyArr.h"
 #include "CitizenArr.h"
+#include "string.h"
 #include "DistrictVotes.h"
 
 District::District(string& _name, int _id, int _electors)
@@ -232,5 +233,16 @@ ostream& District::printDistrict(ostream& os) const
 		"  District Name: " << name <<
 		"  Number of representatives: " << electors << endl <<
 		"***********************************" << endl;
+	return os;
+}
+
+ostream& District::printCitizens(ostream& os) const
+{
+	map<int, Citizen*>::iterator it;
+	for (auto citizen: citizen_arr)//in citizenArr
+	{
+		os << citizen.second << endl
+			<< "***********************************" << endl;
+	}
 	return os;
 }
