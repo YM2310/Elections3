@@ -27,7 +27,7 @@ public:
 	float getVotingPercentage()const;
 	virtual DistrictVotesArr getWinner()const = 0;
 	const Citizen* getCitizen(int id) const;
-	const map<int, Citizen*>  getCitizenArr() const;
+	const CitizenArr& getCitizenArr() const;
 	const DistrictVotesArr& getVotesArr() const;
 	int getVotesOfParty(int party_num) const;
 
@@ -56,6 +56,7 @@ public:
 	/*Operators: */
 	friend ostream& operator<<(ostream& os, const District& dist);
 	virtual ostream& printDistrict(ostream& os) const;
+	virtual ostream& printCitizens(ostream& os) const;
 
 protected:
 	int id;
@@ -64,6 +65,6 @@ protected:
 	float voting_percent;
 
 	string name;
-	map <int, Citizen*> citizen_arr; //int= id of citizen
+	CitizenArr& citizen_arr; 
 	DistrictVotesArr votes_arr;
 };
