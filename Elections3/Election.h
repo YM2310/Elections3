@@ -1,11 +1,12 @@
 #pragma once
-#include "myString.h"
 #include "PartyArr.h"
 #include "DistrictArr.h"
+#include <string>
+#include <map>
 
 class Election {
 public:
-	Election(myString& _date);
+	Election(string& _date);
 	Election(istream& in);
 	Election();
 	virtual ~Election();
@@ -13,18 +14,18 @@ public:
 	/*Getters*/
 	Party getParty(int party_num) const;
 	const PartyArr& getPartyArr() const;
-	myString getDate() const;
+	string getDate() const;
 	void checkReps() const;
 
 	/*Adders*/
-	virtual void addCitizen(myString& name, int id, int birthyear, int district_num);
+	virtual void addCitizen(string& name, int id, int birthyear, int district_num);
 	virtual void addRep(int party_num, int rep_id, int district_num);
-	virtual void addParty(myString& name, int candidate_id);
+	virtual void addParty(string& name, int candidate_id);
 	virtual void sumElectors();
 	void addVote(int id, int party_num);
 
 	/*Setters*/
-	void setDate(myString date);
+	void setDate(string date);
 
 	/*Printers*/
 	void printPartys() const;
@@ -40,7 +41,7 @@ public:
 protected:
 	int new_party_id;
 	int new_district_id;
-	myString date;
+	string date;
 	PartyArr party_arr;
 	DistrictArr district_arr;
 };
