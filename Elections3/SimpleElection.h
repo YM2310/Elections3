@@ -5,12 +5,12 @@
 class SimpleElection : public Election // With no districts
 {
 public:
-	SimpleElection(myString& _date, int electors);
+	SimpleElection(string& _date, int electors);
 	SimpleElection(istream& in); //load
 	virtual ~SimpleElection();
 
 	/*Adders: */
-	virtual void addCitizen(myString& name, int id, int birthyear, int district_num) override;//disregard the ditrict_num
+	virtual void addCitizen(string& name, int id, int birthyear, int district_num) override;//disregard the ditrict_num
 	virtual void addRep(int party_num, int id, int district_num) override;//disregard the ditrict_num
 
 	virtual ostream& printResults(ostream& os) const override;
