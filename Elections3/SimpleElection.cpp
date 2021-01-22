@@ -56,7 +56,7 @@ ostream& SimpleElection::printResults(ostream& os) const
 			os << i + 1 << ")." << party_arr[m].getRepsArr()[0].getNameOfRep(i) << endl;
 		}
 		os << "  Total number of votes: " << party_arr[m].getVotes() << endl <<
-			"       Percentage from total votes: " << (static_cast<float>(party_arr[m].getVotes()) / static_cast<float>(district_arr[0].getTotalVotes())) * 100 << "%" << endl;
+			"       Percentage from total votes: " << (static_cast<float>(party_arr[m].getVotes()) / static_cast<float>(district_arr.district_map.find(0)->second->getTotalVotes())) * 100 << "%" << endl;
 	}
 	os << "-----------" << endl;
 
