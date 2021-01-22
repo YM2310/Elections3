@@ -4,7 +4,7 @@
 class RegularElection : public Election // As it was in the first project
 {
 public:
-	RegularElection(myString& _date);
+	RegularElection(string& _date);
 	RegularElection(istream& in); //load
 	RegularElection();
 	virtual ~RegularElection();
@@ -14,7 +14,7 @@ public:
 	const District& getDistrict(int district_num)const;
 
 	/*Adders: */
-	void addDistrict(myString& name, int electors, DistrictType type);
+	void addDistrict(string& name, int electors, DistrictType type);
 
 	/*Printers: */
 	void printDistricts() const;
