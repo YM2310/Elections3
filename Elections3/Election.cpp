@@ -7,7 +7,7 @@
 #define rcastc reinterpret_cast<char*> 
 #define rcastcc reinterpret_cast<const char*> 
 
-Election::Election(myString& _date)
+Election::Election(string& _date)
 {
 	date = _date;
 	new_party_id = 0;
@@ -23,7 +23,7 @@ Election::Election()
 Election::Election(istream& in) //load
 {
 	try {
-		date.load(in);
+		in.read(rcastc(&date), sizeof(date));
 		in.read(rcastc(&new_party_id), sizeof(new_party_id));
 		in.read(rcastc(&new_district_id), sizeof(new_district_id));
 		district_arr.load(in);
@@ -40,7 +40,7 @@ Election::~Election()
 
 }
 
-myString Election::getDate()const
+string Election::getDate()const
 {
 	return date;
 }
@@ -55,7 +55,7 @@ const PartyArr& Election::getPartyArr()const
 	return party_arr;
 }
 
-void Election::setDate(myString date)
+void Election::setDate(string date)
 {
 	this->date = date;
 }
@@ -91,7 +91,7 @@ void Election::addVote(int id, int party_num)
 	}
 }
 
-void Election::addCitizen(myString& name, int id, int birthyear, int district_num)
+void Election::addCitizen(string& name, int id, int birthyear, int district_num)
 {
 	try {
 		checkBirthYear(birthyear);// throw an error if less than 18 years old
@@ -113,7 +113,7 @@ void Election::addRep(int party_num, int rep_id, int district_num)
 	}
 }
 
-void Election::addParty(myString& name, int candidate_id)
+void Election::addParty(string& name, int candidate_id)
 {
 	try {
 		int party_id = new_party_id;
@@ -171,7 +171,7 @@ void Election::checkReps() const// check if there are enough representatives
 void Election::save(ostream& out) const
 {
 	try {
-		date.save(out);
+		out.write(rcastcc(&date), sizeof(date));
 		out.write(rcastcc(&new_party_id), sizeof(new_party_id));
 		out.write(rcastcc(&new_district_id), sizeof(new_district_id));
 		district_arr.saveDistricts(out);
@@ -186,7 +186,7 @@ void Election::save(ostream& out) const
 void Election::load(istream& in)
 {
 	try {
-		date.load(in);
+		in.read(rcastc(&date), sizeof(date));
 		in.read(rcastc(&new_party_id), sizeof(new_party_id));
 		in.read(rcastc(&new_district_id), sizeof(new_district_id));
 		district_arr.load(in);
