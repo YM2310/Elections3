@@ -49,8 +49,7 @@ const District& DistrictArr::getDistrict(int district_num) const
 	}
 }
 
-District* DistrictArr::addDistrict(myString& name, int district_id, int electors, DistrictType type)// pay attention: when you create the new arr, you are creating a new DistrictPtr* and NOT DistritctArr.
-//so 1) dont delete existing arr, just its DistrictPtr* and 2) reassing just the DistrictPtr*
+District* DistrictArr::addDistrict(myString& name, int district_id, int electors, DistrictType type)
 {
 	District* new_district = nullptr;
 	if (log_size == real_size) {

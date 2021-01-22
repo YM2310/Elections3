@@ -1,5 +1,6 @@
 #pragma once
 #include "PartyPtr.h"
+#include "DynamicArray.h"
 class District;
 class PartyArr {
 public:
@@ -15,9 +16,7 @@ public:
 	/*Setters: */
 	void initElectors();
 
-	int partitionByVotes(PartyArr& arr, int left, int right);
 	void changeSize(int size);
-	void quickSortByVotes(PartyArr& arr, int left, int right);
 
 	/*Adders: */
 	Party* addParty(myString& partyName, int _partyNum, const Citizen* leader);//adds new party to arr.
@@ -27,8 +26,6 @@ public:
 	void addVotes(int party_num, int votes);
 
 	int CheckIfRep(const Citizen* newrep) const;
-	void quickSort(PartyArr& arr, int left, int right);
-
 	/*Files: */
 	void save(ostream& out) const;
 	void load(istream& in, DistrictArr& district_map);
@@ -36,12 +33,9 @@ public:
 	/*Operators*/
 	friend ostream& operator<<(ostream& os, const PartyArr& arr);
 	Party& operator[](int i) { return *party_arr[i]; }
-	const Party& operator[](int i)const { return  *party_arr[i]; }
+	const Party& operator[](int i)const { return  party_arr[i]; }
 	
 private:
-	int log_size;
-	int real_size;
-	PartyPtr* party_arr;
+	DynamicArray<PartyPtr> party_arr;
 	void doubleSize();
-	int partition(PartyArr& arr, int left, int right);
 };

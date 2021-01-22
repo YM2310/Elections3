@@ -114,6 +114,12 @@
     <ClCompile Include="Election.cpp">
       <Filter>Election\Source</Filter>
     </ClCompile>
+    <ClCompile Include="QuickSort.cpp">
+      <Filter>General\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicArray.h">
+      <Filter>General\Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Menu.h">
