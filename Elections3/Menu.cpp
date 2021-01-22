@@ -1,7 +1,6 @@
 #include "Menu.h"
 #include <iostream>
 #include <fstream>
-//#include "myString.h"
 #include <string>
 #include <typeinfo>
 using namespace std;
@@ -267,7 +266,7 @@ void results(Election* elections) {
 		return;
 	}
 	if (typeid(elections) == typeid(RegularElection)) {
-		if (static_cast<RegularElection*>(elections)->getDistrictArr().getLogSize() == 0) {
+		if (static_cast<RegularElection*>(elections)->getDistrictArr().district_map.size() == 0) {
 			cout << "No Districts exist yet!" << endl;
 			return;
 		}
