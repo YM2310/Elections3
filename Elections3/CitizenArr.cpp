@@ -4,14 +4,10 @@
 #define rcastcc reinterpret_cast<const char*>
 #define rcastc reinterpret_cast<char*>
 class District;
-CitizenArr::CitizenArr(int size)
+
+CitizenArr::CitizenArr(int size): 
+	citizen_map {}
 {
-	try{
-		citizen_map = {};
-	}
-	catch (bad_alloc& ex){
-		throw;
-	}
 }
 
 CitizenArr::CitizenArr(istream& in, District* dist) //load
