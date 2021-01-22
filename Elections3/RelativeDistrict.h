@@ -3,7 +3,7 @@
 
 class RelativeDistrict : public District {
 public:
-	RelativeDistrict(myString& _name, int _id, int _electors);
+	RelativeDistrict(string& _name, int _id, int _electors);
 	RelativeDistrict(istream& in);
 	virtual ~RelativeDistrict();
 	DistrictVotesArr getWinner() const override;
