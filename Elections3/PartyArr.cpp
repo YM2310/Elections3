@@ -3,11 +3,9 @@
 #define rcastcc reinterpret_cast<const char*>
 #define rcastc reinterpret_cast<char*>
 
-PartyArr::PartyArr(int _logsize, int _realsize)
+PartyArr::PartyArr(int size) : party_arr(size)
 {
-	log_size = _logsize;
-	real_size = _realsize;
-	party_arr = new PartyPtr[real_size];
+	
 }
 
 PartyArr::PartyArr(istream& in, DistrictArr& district_map)// load
@@ -25,41 +23,39 @@ PartyArr::PartyArr(istream& in, DistrictArr& district_map)// load
 
 PartyArr::~PartyArr()
 {
-	delete[] party_arr;
+
 }
 
 int PartyArr::getLogSize() const
 {
-	return(log_size);
+	return(party_arr.size());
 }
 
-Party& PartyArr::getParty(int partyNum) const
+const Party& PartyArr::getParty(int partyNum) const
 {
-	for (int i = 0; i < log_size; i++)
+	DynamicArray<PartyPtr>::const_iterator iter = party_arr.cbegin();
+	DynamicArray<PartyPtr>::const_iterator end = party_arr.cend();
+	for (; iter!=end;iter++)
 	{
-		if (party_arr[i]->getPartyNum() == partyNum)
-			return *party_arr[i];
+		if ((*iter)->getPartyNum() == partyNum)
+			return *(*iter);
 	}
 }
 
 Party* PartyArr::addParty(myString& partyName, int _partyNum, const Citizen* leader)
 {
-	if (log_size == real_size)
-		doubleSize();
+	
 	Party* new_party = new Party(partyName, leader, _partyNum);
-	party_arr[log_size].setPtr(new_party);
-
-	log_size++;//so the first one added to PartyArr will be in idx 0
+	party_arr.push_back(new_party);
 	return new_party;
 }
 
 void PartyArr::addDistrict(District* district_id)
 {
-	for (int i = 0; i < log_size; i++)
+	for (auto party : party_arr)
 	{
-		party_arr[i]->addDistrict(district_id);
+		party->addDistrict(district_id);
 	}
-	PartyPtr temp;
 }
 
 

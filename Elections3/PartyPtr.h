@@ -11,6 +11,8 @@ public:
 	void deleteParty();
 	Party* operator->() { return ptr; }
 	Party& operator*() { return *ptr; }
+	const Party* operator->()const { return ptr; }
+	const Party& operator*() const { return *ptr; }
 	void operator=(const PartyPtr& other);
 private:
 	Party* ptr;

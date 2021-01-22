@@ -34,7 +34,7 @@
     <ClCompile Include="Party.cpp" />
     <ClCompile Include="PartyArr.cpp" />
     <ClCompile Include="PartyPtr.cpp" />
-    <ClCompile Include="QuickSort.cpp" />
+    <ClCompile Include="QuickSort.h" />
     <ClCompile Include="RegularElection.cpp" />
     <ClCompile Include="RelativeDistrict.cpp" />
     <ClCompile Include="Reps.cpp" />
