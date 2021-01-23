@@ -1,0 +1,2 @@
+In Reps.cpp:
+	add checks for get id and name of rep that are funciotns

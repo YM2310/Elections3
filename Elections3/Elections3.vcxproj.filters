@@ -182,5 +182,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt" />
+    <Text Include="TO DO.txt" />
   </ItemGroup>
 </Project>

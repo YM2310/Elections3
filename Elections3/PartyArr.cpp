@@ -10,13 +10,12 @@ PartyArr::PartyArr(int size) : party_arr(size)
 
 PartyArr::PartyArr(istream& in, DistrictArr& district_map)// load
 {
+	int log_size;
 	in.read(rcastc(&log_size), sizeof(log_size));
-	real_size = log_size + 1;
-	party_arr = new PartyPtr[real_size];
 	for (int i = 0; i < log_size; i++)
 	{
 		Party* party = new Party(in, district_map);
-		party_arr[i].setPtr(party);
+		party_arr.push_back(party);
 	}
 }
 
@@ -33,12 +32,12 @@ int PartyArr::getLogSize() const
 
 const Party& PartyArr::getParty(int partyNum) const
 {
-	DynamicArray<PartyPtr>::const_iterator iter = party_arr.cbegin();
-	DynamicArray<PartyPtr>::const_iterator end = party_arr.cend();
-	for (; iter!=end;iter++)
+	DynamicArray<PartyPtr>::const_iterator iter = party_arr.begin();
+	DynamicArray<PartyPtr>::const_iterator end = party_arr.end();
+	for (auto& party : party_arr)
 	{
-		if ((*iter)->getPartyNum() == partyNum)
-			return *(*iter);
+		if (party->getPartyNum() == partyNum)
+			return *party;
 	}
 }
 
@@ -52,7 +51,7 @@ Party* PartyArr::addParty(myString& partyName, int _partyNum, const Citizen* lea
 
 void PartyArr::addDistrict(District* district_id)
 {
-	for (auto party : party_arr)
+	for (auto& party : party_arr)
 	{
 		party->addDistrict(district_id);
 	}
@@ -61,20 +60,20 @@ void PartyArr::addDistrict(District* district_id)
 
 
 int PartyArr::CheckIfRep(const Citizen* newrep)const { //gets a citizen we know exists and returns if they are a rep of a party
-	for (int j = 0; j < log_size; j++)
+	for (auto& party : party_arr)
 	{
-		for (int m = 0; m < party_arr[j]->getRepsArr().getLogSize(); m++)
+		if (party->getLeader().getID() == newrep->getID())
+			return 100;
+		for (auto& reps_of_dist : party->getRepsArr().getReps())
 		{
-			for (int n = 0; n < party_arr[j]->getRepsArr()[m].getLogSize(); n++)
+			for (auto& rep : reps_of_dist.citizen_arr)
 			{
-				if (party_arr[j]->getRepsArr()[m].getIDRep(n) == newrep->getID())
+				if (rep->getID() == newrep->getID())
 				{
 					return 100;
 				}
 			}
 		}
-		if (party_arr[j]->getLeader().getID() == newrep->getID())
-			return 100;
 	}
 	return 200;// not a rep 
 }
@@ -83,11 +82,11 @@ int PartyArr::addRep(int party_num, int district_num, const Citizen* newrep)
 {
 	if (CheckIfRep(newrep) == 200)
 	{
-		for (int i = 0; i < log_size; i++)
+		for (auto& party : party_arr)
 		{
-			if (party_arr[i]->getPartyNum() == party_num)
+			if (party->getPartyNum() == party_num)
 			{
-				return party_arr[i]->addRep(newrep, district_num);
+				return party->addRep(newrep, district_num);
 			}
 		}
 	}
@@ -97,31 +96,32 @@ int PartyArr::addRep(int party_num, int district_num, const Citizen* newrep)
 
 void PartyArr::addElectoralVotes(int party_num, int electors)
 {
-	for (int i = 0; i < log_size; i++)
+	for (auto& party:party_arr)
 	{
-		if (party_arr[i]->getPartyNum() == party_num)
+		if (party->getPartyNum() == party_num)
 		{
-			party_arr[party_num]->addElectors(electors);
+			party->addElectors(electors);
 		}
 	}
 }
 
 void PartyArr::addVotes(int party_num, int votes)
 {
-	for (int i = 0; i < log_size; i++)
+	for (auto& party : party_arr)
 	{
-		if (party_arr[i]->getPartyNum() == party_num)
+		if (party->getPartyNum() == party_num)
 		{
-			party_arr[party_num]->updateVotes(votes);
+			party->updateVotes(votes);
 		}
 	}
 }
 
 void PartyArr::save(ostream& out) const
 {
+	int log_size = party_arr.size();
 	out.write(rcastcc(&log_size), sizeof(log_size));
-	for (int i = 0; i < log_size; ++i) {
-		party_arr[i]->save(out);
+	for (auto party : party_arr) {
+		party->save(out);
 	}
 }
 
@@ -129,23 +129,19 @@ void PartyArr::load(istream& in, DistrictArr& district_map)
 {
 	int loaded_size;
 	in.read(rcastc(&loaded_size), sizeof(loaded_size));
-	real_size = loaded_size + 1;
-	changeSize(real_size);
-	log_size = loaded_size;
 
-	for (int i = 0; i < log_size; i++)
+	for (int i = 0; i < loaded_size; i++)
 	{
-		party_arr[i].deleteParty();
 		Party* party = new Party(in, district_map);
-		party_arr[i].setPtr(party);
+		party_arr.push_back(party);
 	}
 }
 
 void PartyArr::initElectors() 
 {
-	for (int i = 0; i < log_size; i++)
+	for (auto& party : party_arr)
 	{
-		party_arr[i]->resetElectors();
+		party->resetElectors();
 	}
 }
 

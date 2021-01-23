@@ -29,3 +29,8 @@ void PartyPtr::operator=(const PartyPtr& other)
 {
 	ptr = other.ptr;
 }
+
+void PartyPtr::operator=(Party* other)
+{
+	ptr = other;
+}

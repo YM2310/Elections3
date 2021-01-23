@@ -30,6 +30,8 @@ public:
 
 	/*Operators*/
 	friend ostream& operator<<(ostream& os, const PartyArr& arr);
+	Party& operator[](int i) { return *party_arr[i]; }
+	const Party& operator[](int i)const { return  *party_arr[i]; }
 
 
 	/*Compares*/
@@ -56,6 +58,6 @@ public:
 		}
 	};
 	
-private:
 	DynamicArray<PartyPtr> party_arr;
+private:
 };

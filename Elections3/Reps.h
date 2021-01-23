@@ -6,13 +6,11 @@ class DistrictArr;
 class Reps
 {
 public:
-	Reps(int size = 1, const District* distritct_num = nullptr); // init an empty citizenArr, according to given size
+	Reps(int size = 2, const District* distritct_num = nullptr); // init an empty citizenArr, according to given size
 	~Reps();
 	int getLogSize() const;
 	int getDistrictNum() const;
 	const District* getDistrict()const;
-	void doubleSize();
-	void changeSize(int new_size);
 	int addCitizenToArr(const Citizen* person);
 	myString getNameOfRep(int idx) const;
 	int getIDRep(int idx) const;
@@ -26,8 +24,6 @@ public:
 	Reps& operator=(const Reps& origin);
 	
 private:
+	DynamicArray<const Citizen*> citizen_arr;
 	const District* distrtict_num;
-	const Citizen** citizen_arr;
-	int log_size;
-	int real_size;
 };

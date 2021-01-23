@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 using namespace std;
 
@@ -186,10 +187,11 @@ public:
 	iterator end() {
 		return iterator(*this, _logicalSize);
 	}
-	const_iterator cbegin() const {
+
+	const_iterator begin() const {
 		return const_iterator(*this, 0);
 	}
-	const_iterator cend() const {
+	const_iterator end() const {
 		return const_iterator(*this, _logicalSize);
 	}
 

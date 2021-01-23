@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="README.txt" />
+    <Text Include="TO DO.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
