@@ -10,7 +10,6 @@ enum choice { district = 1, citizen = 2, party = 3, rep = 4, disp_districts = 5,
 int preMenu() //The first menu- first we ask if the use wants to load / create new one
 {
 	Election* elections = nullptr;
-	int day, month, year;
 	int choice = 0;
 	while (choice != 1 && choice != 2) {
 		cout << "***********************************" << endl <<
@@ -21,9 +20,7 @@ int preMenu() //The first menu- first we ask if the use wants to load / create n
 
 	}
 	if (choice == 1) { //New Election
-		cout << "please enter date: " << endl;
-		cin >> day >> month >> year;
-		string date = to_string(day) + "/" + to_string(month) + "/" + to_string(year);
+		string date = dateInput();
 		cout << "Please enter the type of election:" << endl <<
 			"1- Regular Election" << endl << "2- Simple Election" << endl;
 		choice = getChoice();
@@ -49,16 +46,16 @@ int preMenu() //The first menu- first we ask if the use wants to load / create n
 
 string dateInput() {
 	try {
-		string date;
-		cout << "Please enter date of election (format: dd/mm/yyyy ): " << endl;
-		cin >> date;
-		checkDate(date);//catch: "Not a valid date. Please enter date of election (format: dd/mm/yyyy ): "
+		int day, month, year;
+		cout << "please enter date: " << endl;
+		cin >> day >> month >> year;
+		string date = to_string(day) + "/" + to_string(month) + "/" + to_string(year);
+		checkDate(date);//catch: "Not a valid date. 
 		return date;
 	}
 	catch (exception& ex)
 	{
 		cout << "ERROR: " << ex.what() << endl; 
-		//WHEN WE HAVE STRINGS REMEMBER TO FREE THE LAST DATE!
 		dateInput();
 	}
 }
@@ -109,7 +106,7 @@ void superSwitch(int choice, Election* elections) {
 	switch (choice)
 	{
 	case district: {
-		if (typeid(elections) == typeid(SimpleElection)) {
+		if (typeid(*elections) == typeid(SimpleElection)) {
 			cout << "Simple elections, cant add district" << endl;
 			break;
 		}
@@ -157,6 +154,9 @@ void addDistrict(Election* elections) { //add District- only to Regular Election
 	catch (string& msg) {
 		cout << "ERROR: " << msg << endl;
 	}
+	catch (...) {
+		cout << "An error has occured" << endl;
+	}
 
 }
 void addCitizen(Election* elections) {
@@ -184,6 +184,9 @@ void addCitizen(Election* elections) {
 	catch (string& msg) {
 		cout << "ERROR: " << msg << endl;
 	}
+	catch (...) {
+		cout << "An error has occured" << endl;
+	}
 }
 
 void addParty(Election* elections) {
@@ -202,6 +205,9 @@ void addParty(Election* elections) {
 	}
 	catch (string& msg) {
 		cout << "ERROR: " << msg << endl;
+	}
+	catch (...) {
+		cout << "An error has occured" << endl;
 	}
 }
 
@@ -225,6 +231,9 @@ void addRep(Election* elections) {
 	}
 	catch (string& msg) {
 		cout << "ERROR: " << msg << endl;
+	}
+	catch (...) {
+		cout << "An error has occured" << endl;
 	}
 }
 
@@ -258,6 +267,9 @@ void vote(Election* elections) {
 	catch (string& msg) {
 		cout << "ERROR: " << msg << endl;
 	}
+	catch (...) {
+		cout << "An error has occured" << endl;
+	}
 }
 
 void results(Election* elections) {
@@ -280,6 +292,9 @@ void results(Election* elections) {
 	catch (string& msg) 
 	{
 		cout << msg << endl;
+	}
+	catch (...) {
+		cout << "An error has occured" << endl;
 	}
 }
 
@@ -312,6 +327,9 @@ void saveElections(const Election& elections) {
 	}
 	catch (string& msg) {
 		cout << "ERROR: " << msg << endl;
+	}
+	catch (...) {
+		cout << "An error has occured" << endl;
 	}
 }
 
@@ -348,16 +366,23 @@ Election* loadElections(Election * election) {
 	catch (string& msg) {
 		cout << "ERROR: " << msg << endl;
 	}
+	catch (...) {
+		cout << "An error has occured" << endl;
+	}
 }
 
 void checkDate(const string& date)
 {
-	if (date[2] != '/' || date[5] != '/')
-		throw invalid_argument("Not a valid date. Please enter date of election (format: dd/mm/yyyy ): ");
 	int day1 = date[0] - '0', day2 = date[1] - '0';
 	int day = day1 * 10 + day2;
-	int mo1 = date[3] - '0', mo2 = date[4] - '0';
-	int mo = mo1 * 10 + mo2;
+	int mo;
+	if (date[4] == '/')
+		mo = date[3] - '0';
+	else
+	{
+		int mo1 = date[3] - '0', mo2 = date[4] - '0';
+		mo = mo1 * 10 + mo2;
+	}
 	int y1 = date[6] - '0', y2 = date[7] - '0', y3 = date[8] - '0', y4 = date[9] - '0';
 	int year = y1 * 1000 + y2 * 100 + y3 * 10 + y4;
 	if(mo==2 && day>28)

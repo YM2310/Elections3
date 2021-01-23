@@ -28,11 +28,21 @@ ostream& RelativeDistrict::printDistrict(ostream& os) const
 
 void RelativeDistrict::save(ostream& out) const
 {
-	DistrictType temp = RELATIVE;
-	out.write(rcastcc(&temp), sizeof(RELATIVE));
-	District::save(out);
+	try {
+		DistrictType temp = RELATIVE;
+		out.write(rcastcc(&temp), sizeof(RELATIVE));
+		District::save(out);
+	}
+	catch (ostream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 void RelativeDistrict::load(istream& in)
 {
-	District::load(in);
+	try {
+		District::load(in);
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }

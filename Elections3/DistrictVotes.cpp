@@ -14,13 +14,18 @@ DistrictVotesArr::DistrictVotesArr(int size)
 
 DistrictVotesArr::DistrictVotesArr(const DistrictVotesArr& origin)
 {
-	log_size = origin.log_size;
-	real_size = origin.real_size;
-	votes_arr = new DistrictVotes[real_size];
+	try {
+		log_size = origin.log_size;
+		real_size = origin.real_size;
+		votes_arr = new DistrictVotes[real_size];
 
-	for (int i = 0; i < log_size; i++)
-	{
-		votes_arr[i] = origin.votes_arr[i];
+		for (int i = 0; i < log_size; i++)
+		{
+			votes_arr[i] = origin.votes_arr[i];
+		}
+	}
+	catch (bad_alloc& ex) {
+		throw;
 	}
 }
 
@@ -38,37 +43,42 @@ void DistrictVotesArr::addParty(const Party* party_id)
 	log_size++;
 }
 
-int DistrictVotesArr::addVote(int party_id)
+void DistrictVotesArr::addVote(int party_id)
 {
 	for (int i = 0; i < log_size; i++)
 	{
 		if (votes_arr[i].party->getPartyNum() == party_id) {
 			votes_arr[i].votes++;
-			return 200; //validates OK
+			return;
 		}
 	}
-	return 400; // No party with this id
+	throw "No party with this id";
 }
 
-int DistrictVotesArr::addRep(int party_id)
+void DistrictVotesArr::addRep(int party_id)
 {
 	for (int i = 0; i < log_size; i++)
 	{
 		if (votes_arr[i].party->getPartyNum() == party_id) {
 			votes_arr[i].reps_num++;
-			return 200; //validates OK
+			return;
 		}
 	}
-	return 400; // no party with this id
+	throw "no party with this id";
 }
 
 void DistrictVotesArr::changeSize(int size)
 {
-	real_size = size;
-	DistrictVotes* new_arr = new DistrictVotes[real_size];
-	std::memcpy(new_arr, votes_arr, log_size * sizeof(DistrictVotes));
-	delete[]votes_arr;
-	votes_arr = new_arr;
+	try {
+		real_size = size;
+		DistrictVotes* new_arr = new DistrictVotes[real_size];
+		std::memcpy(new_arr, votes_arr, log_size * sizeof(DistrictVotes));
+		delete[]votes_arr;
+		votes_arr = new_arr;
+	}
+	catch (bad_alloc& ex) {
+		throw;
+	}
 }
 
 
@@ -125,28 +135,38 @@ int DistrictVotesArr::getLogSize() const
 
 void DistrictVotesArr::save(ostream& out) const
 {
-	out.write(rcastcc(&log_size), sizeof(log_size));
-	for (int i = 0; i < log_size; i++)
-	{
-		int party_num = votes_arr[i].party->getPartyNum();
-		out.write(rcastcc(&party_num), sizeof(party_num));
-		out.write(rcastcc(&votes_arr[i].votes), sizeof(int));
-		out.write(rcastcc(&votes_arr[i].reps_num), sizeof(int));
+	try {
+		out.write(rcastcc(&log_size), sizeof(log_size));
+		for (int i = 0; i < log_size; i++)
+		{
+			int party_num = votes_arr[i].party->getPartyNum();
+			out.write(rcastcc(&party_num), sizeof(party_num));
+			out.write(rcastcc(&votes_arr[i].votes), sizeof(int));
+			out.write(rcastcc(&votes_arr[i].reps_num), sizeof(int));
+		}
+	}
+	catch (ostream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 
 void DistrictVotesArr::load(istream& in, const PartyArr& party_map) {
-	int votes_arr_size;
-	in.read(rcastc(&votes_arr_size), sizeof(int));
-	changeSize(votes_arr_size + 1);
-	log_size = votes_arr_size;
-	int party_id;
-	for (int i = 0; i < log_size; i++)
-	{
-		in.read(rcastc(&party_id), sizeof(int));
-		votes_arr[i].party = &party_map.getParty(party_id);
-		in.read(rcastc(&votes_arr[i].votes), sizeof(votes_arr[i].votes));
-		in.read(rcastc(&votes_arr[i].reps_num), sizeof(votes_arr[i].reps_num));
+	try {
+		int votes_arr_size;
+		in.read(rcastc(&votes_arr_size), sizeof(int));
+		changeSize(votes_arr_size + 1);
+		log_size = votes_arr_size;
+		int party_id;
+		for (int i = 0; i < log_size; i++)
+		{
+			in.read(rcastc(&party_id), sizeof(int));
+			votes_arr[i].party = &party_map.getParty(party_id);
+			in.read(rcastc(&votes_arr[i].votes), sizeof(votes_arr[i].votes));
+			in.read(rcastc(&votes_arr[i].reps_num), sizeof(votes_arr[i].reps_num));
+		}
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 

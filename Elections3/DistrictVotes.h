@@ -35,13 +35,13 @@ public:
 
 	/*Adders: */
 	void addParty(const Party* party);
-	int addVote(int party_id);
-	int addRep(int party_id);
+	void addVote(int party_id);
+	void addRep(int party_id);
 
 
 	void bubbleReminder(float reps_per_vote, int reps_remaining);
 	void qSort();
-	
+
 	/*Operators: */
 	DistrictVotes& operator[](int i) { return votes_arr[i]; }
 	const DistrictVotes& operator[](int i) const { return votes_arr[i]; }

@@ -6,7 +6,7 @@
 Citizen::Citizen(string& _name, int _id, int _birth_year, District* _district, bool _voted)
 {
 	if (_id > 999999999 || _id < 100000000) //checkes if ID is not 9 digits
-		throw invalid_argument("Invalid ID");
+		throw invalid_argument("Invalid Citizen ID");
 	//if- age is less than 18- checks from election
 	district = _district;
 	name = _name;
