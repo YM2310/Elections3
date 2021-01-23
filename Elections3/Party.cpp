@@ -21,6 +21,12 @@ Party::Party(istream& in, DistrictArr& district_map) //load
 	name.load(in);
 
 	reps_by_district.load(in, district_map);
+
+	if (in.good()==false) {
+		name.~myString();
+		reps_by_district.~RepsArr();
+		throw runtime_error("file not good!");
+	}
 }
 
 void Party::addElectors(int won)
@@ -28,9 +34,10 @@ void Party::addElectors(int won)
 	electors_won += won;
 }
 
-int Party::addRep(const Citizen* rep, int district_num)
+void Party::addRep(const Citizen* rep, int district_num)
 {
-	return reps_by_district.addRep(rep, district_num);
+	reps_by_district.addRep(rep, district_num);
+
 }
 
 void Party::addDistrict(const District* district_id)
@@ -68,8 +75,8 @@ const RepsArr& Party::getRepsArr() const
 	return reps_by_district;
 }
 
-void Party::updateVotes(int add) {
-	votes_got = add;
+void Party::updateVotes(int new_votes) {
+	votes_got = new_votes;
 }
 
 const Reps& Party::getReps(int district_num) const
@@ -79,6 +86,8 @@ const Reps& Party::getReps(int district_num) const
 		if (district_num == reps_by_district[i].getDistrictNum())
 			return reps_by_district[i];
 	}
+
+	throw invalid_argument("district doesnt exist");
 }
 
 void Party::resetElectors()
@@ -95,6 +104,12 @@ void Party::save(ostream& out)
 	out.write(rcastcc(&leader_id), sizeof(int));
 	name.save(out);
 	reps_by_district.save(out);
+
+
+	if (out.good() == false) {
+		throw runtime_error("file not good!");
+	}
+
 }
 
 ostream& operator<<(ostream& os, const Party& party)

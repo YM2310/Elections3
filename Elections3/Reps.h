@@ -11,7 +11,7 @@ public:
 	int getLogSize() const;
 	int getDistrictNum() const;
 	const District* getDistrict()const;
-	int addCitizenToArr(const Citizen* person);
+	void addCitizenToArr(const Citizen* person);
 	myString getNameOfRep(int idx) const;
 	int getIDRep(int idx) const;
 	const DynamicArray<const Citizen*>& getAllReps() const  {

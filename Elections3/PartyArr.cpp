@@ -17,12 +17,26 @@ PartyArr::PartyArr(istream& in, DistrictArr& district_map)// load
 		Party* party = new Party(in, district_map);
 		party_arr.push_back(party);
 	}
+	if (in.good() == false) {
+		for (auto party : party_arr) {
+			party.deleteParty();
+		}
+		party_arr.~DynamicArray();
+		throw runtime_error("file not good!");
+	}
 }
 
 
 PartyArr::~PartyArr()
 {
 
+}
+
+void PartyArr::clearParties()
+{
+	for (auto partyptr : party_arr) {
+		partyptr.deleteParty();
+	}
 }
 
 int PartyArr::getLogSize() const
@@ -32,13 +46,12 @@ int PartyArr::getLogSize() const
 
 const Party& PartyArr::getParty(int partyNum) const
 {
-	DynamicArray<PartyPtr>::const_iterator iter = party_arr.begin();
-	DynamicArray<PartyPtr>::const_iterator end = party_arr.end();
 	for (auto& party : party_arr)
 	{
 		if (party->getPartyNum() == partyNum)
 			return *party;
 	}
+	throw invalid_argument("Party doesnt exist");
 }
 
 Party* PartyArr::addParty(myString& partyName, int _partyNum, const Citizen* leader)
@@ -61,39 +74,39 @@ void PartyArr::addDistrict(District* district_id)
 
 
 
-int PartyArr::CheckIfRep(const Citizen* newrep)const { //gets a citizen we know exists and returns if they are a rep of a party
+bool PartyArr::CheckIfRep(const Citizen* newrep)const { //gets a citizen we know exists and returns if they are a rep of a party
 	for (auto& party : party_arr)
 	{
 		if (party->getLeader().getID() == newrep->getID())
-			return 100;
+			return true;
 		for (auto& reps_of_dist : party->getRepsArr().getReps())
 		{
 			for (auto& rep : reps_of_dist.getAllReps())
 			{
 				if (rep->getID() == newrep->getID())
 				{
-					return 100;
+					return true;
 				}
 			}
 		}
 	}
-	return 200;// not a rep 
+	return false;// not a rep 
 }
 
-int PartyArr::addRep(int party_num, int district_num, const Citizen* newrep)
+void PartyArr::addRep(int party_num, int district_num, const Citizen* newrep)
 {
-	if (CheckIfRep(newrep) == 200)
+	if (!CheckIfRep(newrep))
 	{
 		for (auto& party : party_arr)
 		{
 			if (party->getPartyNum() == party_num)
 			{
-				return party->addRep(newrep, district_num);
+				 party->addRep(newrep, district_num);
 			}
 		}
 	}
 	else
-		return 100; //This citizen is already a representative
+		throw invalid_argument("Person already a rep"); //This citizen is already a representative
 }
 
 void PartyArr::addElectoralVotes(int party_num, int electors)
@@ -105,6 +118,7 @@ void PartyArr::addElectoralVotes(int party_num, int electors)
 			party->addElectors(electors);
 		}
 	}
+	throw invalid_argument("Party doesnt exist");
 }
 
 void PartyArr::addVotes(int party_num, int votes)
@@ -116,6 +130,7 @@ void PartyArr::addVotes(int party_num, int votes)
 			party->updateVotes(votes);
 		}
 	}
+	throw invalid_argument("Party doesnt exist");
 }
 
 void PartyArr::save(ostream& out) const
@@ -124,6 +139,10 @@ void PartyArr::save(ostream& out) const
 	out.write(rcastcc(&log_size), sizeof(log_size));
 	for (auto party : party_arr) {
 		party->save(out);
+	}
+
+	if (out.good() == false) {
+		throw runtime_error("file not good!");
 	}
 }
 
@@ -136,6 +155,13 @@ void PartyArr::load(istream& in, DistrictArr& district_map)
 	{
 		Party* party = new Party(in, district_map);
 		party_arr.push_back(party);
+	}
+	if (in.good() == false) {
+		for (auto party : party_arr) {
+			party.deleteParty();
+		}
+		party_arr.~DynamicArray();
+		throw runtime_error("file not good!");
 	}
 }
 

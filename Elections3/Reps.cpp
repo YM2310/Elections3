@@ -31,10 +31,9 @@ const District* Reps::getDistrict() const
 }
 
 
-int Reps::addCitizenToArr(const Citizen* person)
+void Reps::addCitizenToArr(const Citizen* person)
 {
 	citizen_arr.push_back(person);
-	return 200;//validates
 }
 
 myString Reps::getNameOfRep(int idx) const//// add checks!
@@ -64,6 +63,10 @@ void Reps::save(ostream& out) const
 		citizen = citizen_arr[i]->getID();
 		out.write(rcastcc(&citizen), sizeof(int));
 	}
+	if (out.good() == false) {
+		throw runtime_error("file not good!");
+	}
+
 
 }
 
@@ -77,6 +80,10 @@ void Reps::load(istream& in, const DistrictArr& district_map)
 	{
 		in.read(rcastc(&citizen), sizeof(int));
 		citizen_arr.push_back(district_map.getCitizen(citizen));
+	}
+	if (in.good() == false) {
+		citizen_arr.~DynamicArray();
+		throw runtime_error("file not good!");
 	}
 }
 

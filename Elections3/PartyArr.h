@@ -8,6 +8,7 @@ public:
 	PartyArr(const PartyArr& origin) = delete;
 	PartyArr(istream& in, DistrictArr& district_map);
 	~PartyArr();// delete[] -partyArr
+	void clearParties();
 
 	/*Getters: */
 	const Party& getParty(int partyNum) const; // returnes the Party itself for a name
@@ -19,11 +20,11 @@ public:
 	/*Adders: */
 	Party* addParty(myString& partyName, int _partyNum, const Citizen* leader);//adds new party to arr.
 	void addDistrict(District* district_id);
-	int addRep(int party_num, int district_num, const Citizen* newrep);
+	void addRep(int party_num, int district_num, const Citizen* newrep);
 	void addElectoralVotes(int party_num, int  electors);
 	void addVotes(int party_num, int votes);
 
-	int CheckIfRep(const Citizen* newrep) const;
+	bool CheckIfRep(const Citizen* newrep) const;
 	/*Files: */
 	void save(ostream& out) const;
 	void load(istream& in, DistrictArr& district_map);

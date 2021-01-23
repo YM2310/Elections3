@@ -9,7 +9,7 @@ public:
 	~RepsArr();
 
 	void addDistrict(const District* district_id);
-	int addRep(const Citizen* rep, int district_id);
+	void addRep(const Citizen* rep, int district_id);
 	void copyReps(Reps* origin, int origin_size);
 	/*Getters: */
 	int getLogSize() const;

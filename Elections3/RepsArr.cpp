@@ -12,18 +12,17 @@ RepsArr::~RepsArr()
 
 void RepsArr::addDistrict(const District* district_id)
 {
-	reps.push_back(Reps(1, district_id));
+	reps.push_back(Reps(2, district_id));
 }
 
-int RepsArr::addRep(const Citizen* rep, int district_id)
+void RepsArr::addRep(const Citizen* rep, int district_id)
 {
 	for (auto& reps_of_dist : reps) {
 		if (reps_of_dist.getDistrictNum() == district_id) {
 			reps_of_dist.addCitizenToArr(rep);
-			return 200; //validates OK
 		}
 	}
-	return 400; // not found this district
+	throw invalid_argument("district doesnt exist");
 }
 
 void RepsArr::copyReps(Reps* origin, int origin_size) {
@@ -49,6 +48,8 @@ const Reps& RepsArr::getRepsOfDistrict(int district_num) const
 		}
 	}
 
+	throw invalid_argument("District doesnt exist!");
+
 }
 
 void RepsArr::save(ostream& out) const
@@ -58,6 +59,10 @@ void RepsArr::save(ostream& out) const
 	for (int i = 0; i < log_size; i++)
 	{
 		reps[i].save(out);
+	}
+
+	if (out.good() == false) {
+		throw runtime_error("file not good!");
 	}
 }
 
@@ -71,6 +76,10 @@ void RepsArr::load(istream& in, const DistrictArr& district_map)
 		Reps temp;
 		temp.load(in, district_map);
 		reps.push_back(temp);
+	}
+	if (in.good() == false) {
+		reps.~DynamicArray();
+		throw runtime_error("file not good!");
 	}
 }
 

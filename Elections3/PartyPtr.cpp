@@ -11,7 +11,6 @@ PartyPtr::PartyPtr(Party* p)
 
 PartyPtr::~PartyPtr()
 {
-	//delete ptr;
 }
 
 void PartyPtr::setPtr(Party* _party)
