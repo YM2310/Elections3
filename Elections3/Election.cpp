@@ -47,7 +47,12 @@ string Election::getDate()const
 
 Party Election::getParty(int party_num)const
 {
-	return party_arr.getParty(party_num);
+	try {
+		return party_arr.getParty(party_num);
+	}
+	catch (...) {
+		throw;
+	}
 }
 
 const PartyArr& Election::getPartyArr()const
@@ -72,7 +77,6 @@ void Election::checkPartyExists(int party) const
 		if (party_arr[i].getPartyNum() == party)
 			return;
 	}
-	throw "Party not found";
 	throw "Party not found";
 }
 
@@ -134,24 +138,29 @@ void Election::addParty(string& name, int candidate_id)
 
 void Election::sumElectors()
 {
-	party_arr.initElectors();
-	int winner, electors, party_votes, i = 0;
-	DistrictVotesArr electors_arr;
-	for (auto dist: district_arr.district_map) // within dist_arr
-	{
-		dist.second->calculateReps();
-		electors_arr = dist.second->getWinner();
-		for (int j = 0; j < electors_arr.getLogSize(); j++) { //within dist_votes_arr
-			party_arr.addElectoralVotes(electors_arr[j].party->getPartyNum(), electors_arr[j].reps_num);
-		}
-		for (int j = 0; j < party_arr.getLogSize(); j++)// within party_arr
+	try {
+		party_arr.initElectors();
+		int winner, electors, party_votes, i = 0;
+		DistrictVotesArr electors_arr;
+		for (auto dist : district_arr.district_map) // within dist_arr
 		{
-			if (i == 0)//init the votes before adding
-				party_arr[j].updateVotes(0);
-			party_votes = dist.second->getVotesOfParty(party_arr[j].getPartyNum());
-			party_arr[j].updateVotes(party_votes + party_arr[j].getVotes());
+			dist.second->calculateReps();
+			electors_arr = dist.second->getWinner();
+			for (int j = 0; j < electors_arr.getLogSize(); j++) { //within dist_votes_arr
+				party_arr.addElectoralVotes(electors_arr[j].party->getPartyNum(), electors_arr[j].reps_num);
+			}
+			for (int j = 0; j < party_arr.getLogSize(); j++)// within party_arr
+			{
+				if (i == 0)//init the votes before adding
+					party_arr[j].updateVotes(0);
+				party_votes = dist.second->getVotesOfParty(party_arr[j].getPartyNum());
+				party_arr[j].updateVotes(party_votes + party_arr[j].getVotes());
+			}
+			i++;
 		}
-		i++;
+	}
+	catch (...) {
+		throw;
 	}
 }
 
