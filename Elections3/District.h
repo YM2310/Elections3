@@ -40,8 +40,8 @@ public:
 	void addCitizen(string& name, int id, int birthyear);
 	void addCitizen(Citizen* citizen);
 	void addParty(const Party* partynum);
-	int addRep(int party_num);
-	int addVote(int party_num, int id); /// verify id, and then vote! 
+	void addRep(int party_num);
+	void addVote(int party_num, int id); /// verify id, and then vote! 
 
 	/*Calculations: */
 	float calcVotingPercent();
@@ -65,6 +65,6 @@ protected:
 	float voting_percent;
 
 	string name;
-	CitizenArr& citizen_arr; 
+	CitizenArr citizen_arr; 
 	DistrictVotesArr votes_arr;
 };
