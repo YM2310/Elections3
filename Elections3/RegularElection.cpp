@@ -1,5 +1,6 @@
 #include "RegularElection.h"
 
+#include "QuickSort.h"
 #define rcastc reinterpret_cast<char*> 
 #define rcastcc reinterpret_cast<const char*> 
 enum class ElectionType { REGULAR = 1, SIMPLE = 2 };
@@ -37,9 +38,14 @@ const District& RegularElection::getDistrict(int district_num) const
 
 void RegularElection::addDistrict(string& name, int electors, DistrictType type)
 {
-	int district_id = new_district_id;
-	party_arr.addDistrict(district_arr.addDistrict(name, district_id, electors, type));
-	new_district_id++;
+	try {
+		int district_id = new_district_id;
+		party_arr.addDistrict(district_arr.addDistrict(name, district_id, electors, type));
+		new_district_id++;
+	}
+	catch (...) {
+		throw;
+	}
 }
 
 void RegularElection::printDistricts() const
@@ -120,6 +126,6 @@ void RegularElection::save(ostream& out) const
 }
 
 void RegularElection::sumElectors() {
-	party_arr.quickSort(party_arr, 0, party_arr.getLogSize() - 1);
 	Election::sumElectors();
+	quickSort(party_arr.begin(), party_arr.end() - 1, PartyArr::CmpElectors());
 }
