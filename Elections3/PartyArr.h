@@ -18,7 +18,7 @@ public:
 	void initElectors();
 
 	/*Adders: */
-	Party* addParty(myString& partyName, int _partyNum, const Citizen* leader);//adds new party to arr.
+	Party* addParty(string& partyName, int _partyNum, const Citizen* leader);//adds new party to arr.
 	void addDistrict(District* district_id);
 	void addRep(int party_num, int district_num, const Citizen* newrep);
 	void addElectoralVotes(int party_num, int  electors);

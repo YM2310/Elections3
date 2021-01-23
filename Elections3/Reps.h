@@ -22,10 +22,8 @@ public:
 
 	void save(ostream& out) const;
 	void load(istream& in, const DistrictArr& district_map);
-
-	const Citizen& operator[](int i)const { return *citizen_arr[i]; }
 	Reps& operator=(const Reps& origin);
-	
+
 private:
 	DynamicArray<const Citizen*> citizen_arr;
 	const District* distrtict_num;

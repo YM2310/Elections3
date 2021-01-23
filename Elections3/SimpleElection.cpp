@@ -4,10 +4,10 @@
 #define rcastcc reinterpret_cast<const char*> 
 enum class ElectionType { REGULAR = 1, SIMPLE = 2 };
 
-SimpleElection::SimpleElection(myString& _date, int electors)
+SimpleElection::SimpleElection(string& _date, int electors)
 	: Election(_date)
 {
-	myString name = "No Districts in simple elections";
+	string name = "No Districts in simple elections";
 	district_arr.addDistrict(name, 0, electors, DistrictType::RELATIVE); //2== RelativeDistrict
 }
 
@@ -22,14 +22,25 @@ SimpleElection::~SimpleElection()
 
 }
 
-int SimpleElection::addCitizen(myString& name, int id, int birthyear, int district_num)
+void SimpleElection::addCitizen(string& name, int id, int birthyear, int district_num)
 {
-	return Election::addCitizen(name, id, birthyear, 0);
+	try {
+		Election::addCitizen(name, id, birthyear, 0);
+	}
+	catch (...)
+	{
+		throw;
+	}
 }
 
-int SimpleElection::addRep(int party_num, int id, int district_num)
+void SimpleElection::addRep(int party_num, int id, int district_num)
 {
-	return Election::addRep(party_num, id, 0);
+	try {
+		Election::addRep(party_num, id, 0);
+	}
+	catch (...){
+		throw;
+	}
 }
 
 ostream& SimpleElection::printResults(ostream& os) const
@@ -46,7 +57,7 @@ ostream& SimpleElection::printResults(ostream& os) const
 			os << i + 1 << ")." << party_arr[m].getRepsArr()[0].getNameOfRep(i) << endl;
 		}
 		os << "  Total number of votes: " << party_arr[m].getVotes() << endl <<
-			"       Percentage from total votes: " << (static_cast<float>(party_arr[m].getVotes()) / static_cast<float>(district_arr[0].getTotalVotes())) * 100 << "%" << endl;
+			"       Percentage from total votes: " << (static_cast<float>(party_arr[m].getVotes()) / static_cast<float>(district_arr.district_map.find(0)->second->getTotalVotes())) * 100 << "%" << endl;
 	}
 	os << "-----------" << endl;
 
@@ -60,7 +71,12 @@ void SimpleElection::sumElectors() {
 
 void SimpleElection::save(ostream& out) const
 {
-	ElectionType type = ElectionType::SIMPLE;
-	out.write(rcastcc(&type), sizeof(type));
-	Election::save(out);
+	try {
+		ElectionType type = ElectionType::SIMPLE;
+		out.write(rcastcc(&type), sizeof(type));
+		Election::save(out);
+	}
+	catch (ostream::failure& ex) { // Is this one correct???
+		throw("Exception opening/writing/closing file");
+	}
 }

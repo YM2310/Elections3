@@ -3,7 +3,7 @@
 #include "RegularElection.h"
 
 Election* loadMenu();
-myString dateInput();
+string dateInput();
 void mainMenu(Election* elections);// the second menu
 int preMenu(); // the first menu- for load or create new
 int getChoice();
@@ -18,5 +18,5 @@ void printParties(Election* elections);
 void vote(Election* elections);
 void results(Election* elections);
 void saveElections(const Election& elections);
-Election* loadElections(Election* elections=nullptr);
-bool checkDate(const myString& date);
+Election* loadElections(Election* elections = nullptr);
+void checkDate(const string& date);

@@ -1,6 +1,6 @@
 #include "WTADistrict.h"
 
-WTADistrict::WTADistrict(myString& _name, int _id, int _electors):District(_name,_id, _electors)
+WTADistrict::WTADistrict(string& _name, int _id, int _electors) :District(_name, _id, _electors)
 {
 }
 
@@ -24,7 +24,7 @@ DistrictVotesArr WTADistrict::getWinner() const
 ostream& WTADistrict::printDistrict(ostream& os) const
 {
 	cout << "***********************************" << endl;
-	cout << "District Type: Winner Takes All"<< endl;
+	cout << "District Type: Winner Takes All" << endl;
 	this->District::printDistrict(os);
 	return os;
 }
@@ -40,4 +40,3 @@ void WTADistrict::load(istream& in)
 {
 	District::load(in);
 }
-

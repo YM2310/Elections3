@@ -54,7 +54,7 @@ const Party& PartyArr::getParty(int partyNum) const
 	throw invalid_argument("Party doesnt exist");
 }
 
-Party* PartyArr::addParty(myString& partyName, int _partyNum, const Citizen* leader)
+Party* PartyArr::addParty(string& partyName, int _partyNum, const Citizen* leader)
 {
 	
 	Party* new_party = new Party(partyName, leader, _partyNum);
@@ -165,7 +165,7 @@ void PartyArr::load(istream& in, DistrictArr& district_map)
 	}
 }
 
-void PartyArr::initElectors() 
+void PartyArr::initElectors()
 {
 	for (auto& party : party_arr)
 	{

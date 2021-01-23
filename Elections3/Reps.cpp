@@ -38,12 +38,12 @@ void Reps::addCitizenToArr(const Citizen* person)
 
 myString Reps::getNameOfRep(int idx) const//// add checks!
 {
-	return citizen_arr[idx]->getName();
+//	return citizen_arr[idx]->getName();
 }
 
 int Reps::getIDRep(int idx) const//// add checks!
 {
-	return citizen_arr[idx]->getID();
+//	return citizen_arr[idx]->getID();
 }
 
 
@@ -58,10 +58,17 @@ void Reps::save(ostream& out) const
 	district = distrtict_num->getId();
 	out.write(rcastcc(&district), sizeof(int));
 	out.write(rcastcc(&log_size), sizeof(int));
+	/*
 	for (int i = 0; i < log_size; i++)
 	{
-		citizen = citizen_arr[i]->getID();
-		out.write(rcastcc(&citizen), sizeof(int));
+		citizen_id = citizen_arr[i]->getID();
+		out.write(rcastcc(&citizen_id), sizeof(int));
+	}*/
+
+	for (pair<int, Citizen*> citizen : citizen_arr)
+	{
+		citizen_id = citizen.first;
+		out.write(rcastcc(&citizen_id), sizeof(int));
 	}
 	if (out.good() == false) {
 		throw runtime_error("file not good!");
@@ -72,7 +79,7 @@ void Reps::save(ostream& out) const
 
 void Reps::load(istream& in, const DistrictArr& district_map)
 {
-	int  reps_size,district, citizen;
+	int  reps_size, district, citizen_id;
 	in.read(rcastc(&district), sizeof(int));
 	distrtict_num = &district_map.getDistrict(district);
 	in.read(rcastc(&reps_size), sizeof(int));

@@ -1,6 +1,6 @@
 #include "RelativeDistrict.h"
 
-RelativeDistrict::RelativeDistrict(myString& _name, int _id, int _electors) : District(_name, _id, _electors)
+RelativeDistrict::RelativeDistrict(string& _name, int _id, int _electors) : District(_name, _id, _electors)
 {
 }
 
