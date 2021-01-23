@@ -1,4 +1,5 @@
 #include "SimpleElection.h"
+#include "QuickSort.h"
 #define rcastc reinterpret_cast<char*> 
 #define rcastcc reinterpret_cast<const char*> 
 enum class ElectionType { REGULAR = 1, SIMPLE = 2 };
@@ -53,7 +54,7 @@ ostream& SimpleElection::printResults(ostream& os) const
 }
 
 void SimpleElection::sumElectors() {
-	party_arr.quickSortByVotes(party_arr, 0, party_arr.getLogSize() - 1);
+	quickSort(party_arr.begin(), party_arr.end(), PartyArr::CmpVotes());
 	Election::sumElectors();
 }
 

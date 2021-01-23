@@ -76,7 +76,6 @@ int CitizenArr::verifyId(int id) const //to check if voted already
 	for (i = 0; i < log_size; i++)
 	{
 		if (citizen_arr[i]->getID() == id) {
-			;
 			return 100;
 		}
 	}

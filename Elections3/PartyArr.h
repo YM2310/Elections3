@@ -37,27 +37,32 @@ public:
 	/*Compares*/
 	class CmpElectors {
 	public:
-		bool operator()(const Party& party_1, const Party& party_2) {
-			if (party_1.getElectorsWon() > party_2.getElectorsWon())
+		bool operator()(const PartyPtr& party_1, const PartyPtr& party_2) const {
+			if (party_1->getElectorsWon() > party_2->getElectorsWon())
 				return true;
-			if (party_1.getElectorsWon() == party_2.getElectorsWon())
-				if (party_1.getPartyNum() < party_2.getPartyNum())
+			if (party_1->getElectorsWon() == party_2->getElectorsWon())
+				if (party_1->getPartyNum() < party_2->getPartyNum())
 					return true;
 			return false;
 		}
 	};
 	class CmpVotes {
 	public:
-		bool operator()(const Party& party_1, const Party& party_2) {
-			if (party_1.getVotes() > party_2.getVotes())
+		bool operator()(const PartyPtr& party_1, const PartyPtr& party_2) const  {
+			if (party_1->getVotes() > party_2->getVotes())
 				return true;
-			if (party_1.getVotes() == party_2.getVotes())
-				if (party_1.getPartyNum() < party_2.getPartyNum())
+			if (party_1->getVotes() == party_2->getVotes())
+				if (party_1->getPartyNum() < party_2->getPartyNum())
 					return true;
 			return false;
 		}
 	};
-	
-	DynamicArray<PartyPtr> party_arr;
+	DynamicArray<PartyPtr>::iterator begin() {
+		return party_arr.begin();
+	}
+	DynamicArray<PartyPtr>::iterator end() {
+		return party_arr.end();
+	}
 private:
+	DynamicArray<PartyPtr> party_arr;
 };

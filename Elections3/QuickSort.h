@@ -22,12 +22,6 @@ void quickSort(Iterator left, Iterator right, const Compare& cmp) {
 	if (right - left > 1)
 	{
 		Iterator pivot = partition(left, right, cmp);
-		cout << "Partition: ";
-		Iterator itr = left;
-		Iterator itrEnd = right;
-		for (; itr != right; ++itr)
-			cout << *itr << " ";
-		cout << endl;
 		quickSort(left, pivot - 1, cmp);
 		quickSort(pivot + 1, right, cmp);
 	}
@@ -53,27 +47,4 @@ Iterator partition(Iterator left, Iterator right, Compare& cmp)
 	Swap(i, pivot);
 	return i;
 }
-class cmp {
-public:
-	bool operator()(int one, int two) const {
-		return one > two;
-	}
-};
-class vector {
-public:
-	int _a;
-	int _b;
 
-	vector(int a = 0, int b = 0) :_a(a), _b(b) {}
-	friend ostream& operator<<(ostream& os, const vector& vec) {
-		os << "(" << vec._a << "," << vec._b << ")";
-		return os;
-	};
-
-};
-class cmpVec {
-public:
-	bool operator()(vector one, vector two) const {
-		return one._a > two._a;
-	}
-};

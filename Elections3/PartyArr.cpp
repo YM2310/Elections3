@@ -66,7 +66,7 @@ int PartyArr::CheckIfRep(const Citizen* newrep)const { //gets a citizen we know 
 			return 100;
 		for (auto& reps_of_dist : party->getRepsArr().getReps())
 		{
-			for (auto& rep : reps_of_dist.citizen_arr)
+			for (auto& rep : reps_of_dist.getAllReps())
 			{
 				if (rep->getID() == newrep->getID())
 				{
