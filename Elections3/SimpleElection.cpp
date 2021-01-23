@@ -54,8 +54,8 @@ ostream& SimpleElection::printResults(ostream& os) const
 }
 
 void SimpleElection::sumElectors() {
-	quickSort(party_arr.begin(), party_arr.end(), PartyArr::CmpVotes());
 	Election::sumElectors();
+	quickSort(party_arr.begin(), party_arr.end()-1, PartyArr::CmpVotes());
 }
 
 void SimpleElection::save(ostream& out) const

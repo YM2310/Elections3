@@ -14,7 +14,7 @@ public:
 	int addCitizenToArr(const Citizen* person);
 	myString getNameOfRep(int idx) const;
 	int getIDRep(int idx) const;
-	const DynamicArray<const Citizen*>& getAllReps()const {
+	const DynamicArray<const Citizen*>& getAllReps() const  {
 		return citizen_arr;
 	}
         

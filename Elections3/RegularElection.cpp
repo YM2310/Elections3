@@ -120,6 +120,6 @@ void RegularElection::save(ostream& out) const
 }
 
 void RegularElection::sumElectors() {
-	quickSort(party_arr.begin(), party_arr.end(), PartyArr::CmpElectors());
 	Election::sumElectors();
+	quickSort(party_arr.begin(), party_arr.end()-1, PartyArr::CmpElectors());
 }

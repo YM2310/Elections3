@@ -45,7 +45,9 @@ Party* PartyArr::addParty(myString& partyName, int _partyNum, const Citizen* lea
 {
 	
 	Party* new_party = new Party(partyName, leader, _partyNum);
-	party_arr.push_back(new_party);
+	PartyPtr temp_ptr(new_party);
+	party_arr.push_back(temp_ptr);
+	temp_ptr = nullptr;
 	return new_party;
 }
 

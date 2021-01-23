@@ -38,7 +38,7 @@ public:
 	class CmpElectors {
 	public:
 		bool operator()(const PartyPtr& party_1, const PartyPtr& party_2) const {
-			if (party_1->getElectorsWon() > party_2->getElectorsWon())
+			if (party_1->getElectorsWon() < party_2->getElectorsWon())
 				return true;
 			if (party_1->getElectorsWon() == party_2->getElectorsWon())
 				if (party_1->getPartyNum() < party_2->getPartyNum())
@@ -49,7 +49,7 @@ public:
 	class CmpVotes {
 	public:
 		bool operator()(const PartyPtr& party_1, const PartyPtr& party_2) const  {
-			if (party_1->getVotes() > party_2->getVotes())
+			if (party_1->getVotes() < party_2->getVotes())
 				return true;
 			if (party_1->getVotes() == party_2->getVotes())
 				if (party_1->getPartyNum() < party_2->getPartyNum())
