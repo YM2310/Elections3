@@ -28,9 +28,14 @@ void Party::addElectors(int won)
 	electors_won += won;
 }
 
-int Party::addRep(const Citizen* rep, int district_num)
+void Party::addRep(const Citizen* rep, int district_num)
 {
-	return reps_by_district.addRep(rep, district_num);
+	try {
+		reps_by_district.addRep(rep, district_num);
+	}
+	catch (...) {
+		throw;
+	}
 }
 
 void Party::addDistrict(const District* district_id)
