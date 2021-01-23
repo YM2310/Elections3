@@ -20,10 +20,10 @@ public:
 	/*Adders:*/
 	
 	District* addDistrict(string& name, int district_id, int electors, DistrictType type);
-	int addCitizen(string& name, int id, int birthyear, int district_id);
+	void addCitizen(string& name, int id, int birthyear, int district_id);
 	void addParty(const Party* partynum);
-	int addVote(int party_num, int id);
-	int addRep(int party_num, int id, int district_id);
+	void addVote(int party_num, int id);
+	void addRep(int party_num, int id, int district_id);
 
 	/*Files: */
 	void saveDistricts(ostream& out)const;
