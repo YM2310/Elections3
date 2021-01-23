@@ -19,7 +19,7 @@ public:
 
 	/*Adders*/
 	void addElectors(int won);
-	int addRep(const Citizen* rep, int district_num);
+	void addRep(const Citizen* rep, int district_num);
 	void addDistrict(const District* district_id);
 
 	/*Setters*/
