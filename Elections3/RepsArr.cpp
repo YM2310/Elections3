@@ -82,4 +82,3 @@ void RepsArr::load(istream& in, const DistrictArr& district_map)
 		throw runtime_error("file not good!");
 	}
 }
-

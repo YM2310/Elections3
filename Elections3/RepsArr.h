@@ -23,7 +23,7 @@ public:
 	void load(istream& in, const DistrictArr& district_map);
 
 	const Reps& operator[](int i) const { return reps[i]; }
-	
+
 private:
 	DynamicArray<Reps> reps;
 	

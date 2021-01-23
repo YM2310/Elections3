@@ -1,7 +1,7 @@
 #include "Reps.h"
 #include "DistrictArr.h"
 
-Reps::Reps(int size, const District* _district_num):citizen_arr(size)
+Reps::Reps(int size, const District* _district_num) :citizen_arr(size)
 {
 	distrtict_num = _district_num;
 
@@ -33,17 +33,32 @@ const District* Reps::getDistrict() const
 
 void Reps::addCitizenToArr(const Citizen* person)
 {
-	citizen_arr.push_back(person);
+	try {
+		citizen_arr.push_back(person);
+	}
+	catch (...) {
+		throw;
+	}
 }
 
-myString Reps::getNameOfRep(int idx) const//// add checks!
+string Reps::getNameOfRep(int idx) const
 {
-//	return citizen_arr[idx]->getName();
+	try {
+		return citizen_arr[idx]->getName();
+	}
+	catch (...) {
+		throw;
+	}
 }
 
 int Reps::getIDRep(int idx) const//// add checks!
 {
-//	return citizen_arr[idx]->getID();
+	try {
+		return citizen_arr[idx]->getID();
+	}
+	catch (...) {
+		throw;
+	}
 }
 
 
@@ -54,21 +69,19 @@ void Reps::setDistrict(const District* district)
 
 void Reps::save(ostream& out) const
 {
-	int  reps_size, district, citizen,log_size= citizen_arr.size();
-	district = distrtict_num->getId();
-	out.write(rcastcc(&district), sizeof(int));
-	out.write(rcastcc(&log_size), sizeof(int));
-	/*
-	for (int i = 0; i < log_size; i++)
-	{
-		citizen_id = citizen_arr[i]->getID();
-		out.write(rcastcc(&citizen_id), sizeof(int));
-	}*/
-
-	for (pair<int, Citizen*> citizen : citizen_arr)
-	{
-		citizen_id = citizen.first;
-		out.write(rcastcc(&citizen_id), sizeof(int));
+	try {
+		int  reps_size, district, citizen, log_size = citizen_arr.size();
+		district = distrtict_num->getId();
+		out.write(rcastcc(&district), sizeof(int));
+		out.write(rcastcc(&log_size), sizeof(int));
+		for (int i = 0; i < log_size; i++)
+		{
+			citizen = citizen_arr[i]->getID();
+			out.write(rcastcc(&citizen), sizeof(int));
+		}
+	}
+	catch (ostream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 	if (out.good() == false) {
 		throw runtime_error("file not good!");
@@ -79,18 +92,19 @@ void Reps::save(ostream& out) const
 
 void Reps::load(istream& in, const DistrictArr& district_map)
 {
-	int  reps_size, district, citizen_id;
-	in.read(rcastc(&district), sizeof(int));
-	distrtict_num = &district_map.getDistrict(district);
-	in.read(rcastc(&reps_size), sizeof(int));
-	for (int i = 0; i < reps_size; i++)
-	{
-		in.read(rcastc(&citizen), sizeof(int));
-		citizen_arr.push_back(district_map.getCitizen(citizen));
+	try {
+		int  reps_size, district, citizen;
+		in.read(rcastc(&district), sizeof(int));
+		distrtict_num = &district_map.getDistrict(district);
+		in.read(rcastc(&reps_size), sizeof(int));
+		for (int i = 0; i < reps_size; i++)
+		{
+			in.read(rcastc(&citizen), sizeof(int));
+			citizen_arr.push_back(district_map.getCitizen(citizen));
+		}
 	}
-	if (in.good() == false) {
-		citizen_arr.~DynamicArray();
-		throw runtime_error("file not good!");
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 

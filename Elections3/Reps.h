@@ -12,16 +12,18 @@ public:
 	int getDistrictNum() const;
 	const District* getDistrict()const;
 	void addCitizenToArr(const Citizen* person);
-	myString getNameOfRep(int idx) const;
+	string getNameOfRep(int idx) const;
 	int getIDRep(int idx) const;
-	const DynamicArray<const Citizen*>& getAllReps() const  {
+	const DynamicArray<const Citizen*>& getAllReps() const {
 		return citizen_arr;
 	}
-        
+
 	void setDistrict(const District* district);
 
 	void save(ostream& out) const;
 	void load(istream& in, const DistrictArr& district_map);
+
+	const Citizen& operator[](int i)const { return *citizen_arr[i]; }
 	Reps& operator=(const Reps& origin);
 
 private:

@@ -7,8 +7,13 @@ enum class ElectionType { REGULAR = 1, SIMPLE = 2 };
 SimpleElection::SimpleElection(string& _date, int electors)
 	: Election(_date)
 {
-	string name = "No Districts in simple elections";
-	district_arr.addDistrict(name, 0, electors, DistrictType::RELATIVE); //2== RelativeDistrict
+	try {
+		string name = "No Districts in simple elections";
+		district_arr.addDistrict(name, 0, electors, DistrictType::RELATIVE); //2== RelativeDistrict
+	}
+	catch (...) {
+		throw;
+	}
 }
 
 SimpleElection::SimpleElection(istream& in)
@@ -66,7 +71,7 @@ ostream& SimpleElection::printResults(ostream& os) const
 
 void SimpleElection::sumElectors() {
 	Election::sumElectors();
-	quickSort(party_arr.begin(), party_arr.end()-1, PartyArr::CmpVotes());
+	quickSort(party_arr.begin(), party_arr.end() - 1, PartyArr::CmpVotes());
 }
 
 void SimpleElection::save(ostream& out) const
