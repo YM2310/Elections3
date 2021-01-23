@@ -31,12 +31,22 @@ ostream& WTADistrict::printDistrict(ostream& os) const
 
 void WTADistrict::save(ostream& out) const
 {
-	DistrictType temp = WTA;
-	out.write(rcastcc(&temp), sizeof(WTA));
-	District::save(out);
+	try {
+		DistrictType temp = WTA;
+		out.write(rcastcc(&temp), sizeof(WTA));
+		District::save(out);
+	}
+	catch (ostream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 void WTADistrict::load(istream& in)
 {
-	District::load(in);
+	try {
+		District::load(in);
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
