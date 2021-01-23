@@ -2,71 +2,47 @@
 #define rcastcc reinterpret_cast<const char*>
 #define rcastc reinterpret_cast<char*>
 
-RepsArr::RepsArr(int size)
+RepsArr::RepsArr(int size) : reps(size)
 {
-	log_size = 0;
-	real_size = size;
-	reps = new Reps[real_size];
 }
 
 RepsArr::~RepsArr()
 {
-	delete[] reps;
 }
 
 void RepsArr::addDistrict(const District* district_id)
 {
-	if (log_size == real_size)
-		doubleSize();
-	reps[log_size] = Reps(1, district_id);
-	log_size++;
+	reps.push_back(Reps(1, district_id));
 }
 
-int RepsArr::addRep(const Citizen* rep, int district_id)
+void RepsArr::addRep(const Citizen* rep, int district_id)
 {
-	for (int i = 0; i < log_size; i++) {
-		if (reps[i].getDistrictNum() == district_id) {
-			reps[i].addCitizenToArr(rep);
-			return 200; //validates OK
+	for (auto& reps_of_dist : reps) {
+		if (reps_of_dist.getDistrictNum() == district_id) {
+			reps_of_dist.addCitizenToArr(rep);
+			return;
 		}
 	}
-	return 400; // not found this district
+	throw "not found a district with this id";
 }
 
 void RepsArr::copyReps(Reps* origin, int origin_size) {
-	log_size = origin_size;
-	real_size = origin_size+1;
-	reps = new Reps[real_size];
+	reps.clear();
 	for (int i = 0; i < origin_size; i++)
 	{
-		reps[i] = origin[i];
+		reps.push_back(origin[i]);
 	}
 }
 
-void RepsArr::doubleSize() {
-	changeSize(real_size * 2);
-}
-
-void RepsArr::changeSize(int size)
-{
-	real_size = size;
-	Reps* new_size = new Reps[real_size];
-	for (int i = 0; i < log_size; i++)
-	{
-		new_size[i] = reps[i];
-	}
-	delete[] reps;
-	reps = new_size;
-}
 
 int RepsArr::getLogSize() const
 {
-	return log_size;
+	return reps.size();
 }
 
 const Reps& RepsArr::getRepsOfDistrict(int district_num) const
 {
-	for (int i = 0; i < log_size; i++)
+	for (int i = 0; i < reps.size(); i++)
 	{
 		if (reps[i].getDistrictNum() == district_num) {
 			return reps[i];
@@ -77,22 +53,33 @@ const Reps& RepsArr::getRepsOfDistrict(int district_num) const
 
 void RepsArr::save(ostream& out) const
 {
-	out.write(rcastcc(&log_size), sizeof(int));
-	for (int i = 0; i < log_size; i++)
-	{
-		reps[i].save(out);
+	try {
+		int log_size = reps.size();
+		out.write(rcastcc(&log_size), sizeof(int));
+		for (int i = 0; i < log_size; i++)
+		{
+			reps[i].save(out);
+		}
+	}
+	catch(ostream::failure & ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 
 void RepsArr::load(istream& in, const DistrictArr& district_map)
 {
-	int reps_arr_size;
-	in.read(rcastc(&reps_arr_size), sizeof(int));
-	changeSize(reps_arr_size+1);
-	log_size = reps_arr_size;
-	for (int i = 0; i < log_size; i++)
-	{
-		reps[i].load(in, district_map);
+	try {
+		int reps_arr_size;
+		in.read(rcastc(&reps_arr_size), sizeof(int));
+
+		for (int i = 0; i < reps_arr_size; i++)
+		{
+			Reps temp;
+			temp.load(in, district_map);
+			reps.push_back(temp);
+		}
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
-
