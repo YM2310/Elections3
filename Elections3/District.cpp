@@ -15,20 +15,17 @@ District::District(string& _name, int _id, int _electors)
 
 District::District(istream& in) //load
 {
-	in.read(rcastc(&id), sizeof(id));
-	in.read(rcastc(&electors), sizeof(electors));
-	in.read(rcastc(&total_votes), sizeof(total_votes));
-	in.read(rcastc(&voting_percent), sizeof(voting_percent));
-	in.read(rcastc(&name), sizeof(name));
-	//update citizen_arr
-	int log_size;
-	in.read(rcastc(&log_size), sizeof(log_size));
-	for (int i = 0; i < log_size; i++)
-	{
-		Citizen* citizen = new Citizen(in, this);
-		citizen_arr.insert(pair<int, Citizen*>(citizen->getID(), citizen));
+	try {
+		in.read(rcastc(&id), sizeof(id));
+		in.read(rcastc(&electors), sizeof(electors));
+		in.read(rcastc(&total_votes), sizeof(total_votes));
+		in.read(rcastc(&voting_percent), sizeof(voting_percent));
+		in.read(rcastc(&name), sizeof(name));
+		citizen_arr.load(in, this);
 	}
-	//citizen_arr.load(in, this);
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 
@@ -58,12 +55,12 @@ int District::getElectors() const
 
 float District::getVotingPercentage() const
 {
-	return static_cast<float>(total_votes) * 100 / citizen_arr.size();
+	return static_cast<float>(total_votes) * 100 / citizen_arr.citizen_map.size();
 }
 
 const Citizen* District::getCitizen(int id) const
 {
-	return citizen_arr.find(id)->second;
+	return citizen_arr.citizen_map.find(id)->second;
 }
 
 int District::getTotalVotes() const
@@ -91,39 +88,57 @@ bool District::setElectors(int _electors)
 
 void District::addCitizen(string& name, int id, int birthyear)
 {
-	Citizen* citizen = new Citizen(name, id, birthyear, this);
-	citizen_arr.insert(pair<int, Citizen*>(id, citizen));
-	//return citizen_arr.addCitizenToArr(name, id, birthyear, this);
+	try {
+		return citizen_arr.addCitizenToArr(name, id, birthyear, this);
+	}
+	catch (...) {
+		throw;
+	}
 }
 
 void District::addCitizen(Citizen* citizen)
 {
-	citizen_arr.insert(pair<int, Citizen*>(id, citizen));
-	//return citizen_arr.addCitizenToArr(citizen);
+	try {
+		citizen_arr.addCitizenToArr(citizen);
+	}
+	catch (bad_alloc& ex) {
+		throw;
+	}
 }
 
 void District::addParty(const Party* partynum)
 {
-	votes_arr.addParty(partynum);
+	try {
+		votes_arr.addParty(partynum);
+	}
+	catch (...)
+	{
+		throw;
+	}
 }
 
-int District::addVote(int party_num, int id)
+void District::addVote(int party_num, int id)
 {
-	Citizen* citizen = citizen_arr.find(id)->second;
-	if (citizen == nullptr)
-		return 400; //No such citizen
+	if (citizen_arr.citizen_map.find(id) == citizen_arr.citizen_map.end())
+		throw "No citizen with this id";;
+	Citizen* citizen = citizen_arr.citizen_map.find(id)->second;
 	if (citizen->getIfVoted())
-		return 100; // already voted
+		throw "This citizen has already voted";
 
 	citizen->setIfVoted(true);
 	votes_arr.addVote(party_num);
 	total_votes++;
-	return 200;
+	return;
 }
 
-int District::addRep(int party_num)
+void District::addRep(int party_num)
 {
-	return votes_arr.addRep(party_num);
+	try {
+		votes_arr.addRep(party_num);
+	}
+	catch (...){
+		throw;
+	}
 }
 
 float District::calcVotingPercent()
@@ -162,46 +177,52 @@ void District::calculateReps()
 
 void District::save(ostream& out) const
 {
-	out.write(rcastcc(&id), sizeof(id));
-	out.write(rcastcc(&electors), sizeof(electors));
-	out.write(rcastcc(&total_votes), sizeof(total_votes));
-	out.write(rcastcc(&voting_percent), sizeof(voting_percent));
-	out.write(rcastcc(&name), sizeof(name));
-	//citizen_arr.save(out);
-	int log_size = citizen_arr.size();
-	out.write(rcastcc(&log_size), sizeof(log_size));
-	for (pair<int, Citizen*> citizen : citizen_arr)
-	{
-		citizen.second->save(out);
+	try {
+		out.write(rcastcc(&id), sizeof(id));
+		out.write(rcastcc(&electors), sizeof(electors));
+		out.write(rcastcc(&total_votes), sizeof(total_votes));
+		out.write(rcastcc(&voting_percent), sizeof(voting_percent));
+		out.write(rcastcc(&name), sizeof(name));
+		citizen_arr.save(out);
 	}
-
+	catch (ostream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 void District::saveVotes(ostream& out) const
 {
-	votes_arr.save(out);
+	try {
+		votes_arr.save(out);
+	}
+	catch (ostream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 
 void District::link(istream& in, const PartyArr& party_map)
 {
-	votes_arr.load(in, party_map);
+	try {
+		votes_arr.load(in, party_map);
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
+	}
 }
 
 void District::load(istream& in)
 {
-	in.read(rcastc(&id), sizeof(id));
-	in.read(rcastc(&electors), sizeof(electors));
-	in.read(rcastc(&total_votes), sizeof(total_votes));
-	in.read(rcastc(&voting_percent), sizeof(voting_percent));
-	in.read(rcastc(&name), sizeof(name));
-	//load citizen_arr
-	int log_size;
-	in.read(rcastc(&log_size), sizeof(log_size));
-	for (int i = 0; i < log_size; i++)
-	{
-		Citizen* citizen = new Citizen(in, this);
-		citizen_arr.insert(pair<int, Citizen*>(citizen->getID(), citizen));
+	try {
+		in.read(rcastc(&id), sizeof(id));
+		in.read(rcastc(&electors), sizeof(electors));
+		in.read(rcastc(&total_votes), sizeof(total_votes));
+		in.read(rcastc(&voting_percent), sizeof(voting_percent));
+		in.read(rcastc(&name), sizeof(name));
+		citizen_arr.load(in, this);
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 
@@ -216,7 +237,7 @@ int District::getVotesOfParty(int party_num) const
 	return votes_arr.getVotes(party_num);
 }
 
-const map<int, Citizen*> District::getCitizenArr() const
+const CitizenArr& District::getCitizenArr() const
 {
 	return citizen_arr;
 }
@@ -238,8 +259,7 @@ ostream& District::printDistrict(ostream& os) const
 
 ostream& District::printCitizens(ostream& os) const
 {
-	map<int, Citizen*>::iterator it;
-	for (auto citizen: citizen_arr)//in citizenArr
+	for (auto citizen: citizen_arr.citizen_map)//in citizenArr
 	{
 		os << citizen.second << endl
 			<< "***********************************" << endl;
