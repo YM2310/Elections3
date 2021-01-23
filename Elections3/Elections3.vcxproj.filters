@@ -60,9 +60,6 @@
     <ClCompile Include="Menu.cpp">
       <Filter>General\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="myString.cpp">
-      <Filter>General\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Citizen.cpp">
       <Filter>Citizen\Source</Filter>
     </ClCompile>

@@ -109,7 +109,7 @@ void PartyArr::addRep(int party_num, int district_num, const Citizen* newrep)
 		throw invalid_argument("Person already a rep"); //This citizen is already a representative
 }
 
-}
+
 
 void PartyArr::addElectoralVotes(int party_num, int electors)
 {

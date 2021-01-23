@@ -23,7 +23,7 @@ Party::Party(istream& in, DistrictArr& district_map) //load
 	reps_by_district.load(in, district_map);
 
 	if (in.good()==false) {
-		name.~myString();
+		name.~string();
 		reps_by_district.~RepsArr();
 		throw runtime_error("file not good!");
 	}

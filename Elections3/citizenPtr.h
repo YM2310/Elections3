@@ -5,7 +5,7 @@ class CitizenPtr {
 public:
 	CitizenPtr();
 	~CitizenPtr();
-	CitizenPtr(myString _name, int _id, int _birth_year, District* _district, bool _voted = false);
+	CitizenPtr(string _name, int _id, int _birth_year, District* _district, bool _voted = false);
 	CitizenPtr(const CitizenPtr&) = delete;
 	CitizenPtr(Citizen* p) : ptr(p) {}
 

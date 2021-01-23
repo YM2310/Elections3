@@ -30,7 +30,6 @@
     <ClCompile Include="Election.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
-    <ClCompile Include="myString.cpp" />
     <ClCompile Include="Party.cpp" />
     <ClCompile Include="PartyArr.cpp" />
     <ClCompile Include="PartyPtr.cpp" />
