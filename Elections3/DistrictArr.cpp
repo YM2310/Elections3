@@ -9,30 +9,34 @@ DistrictArr::DistrictArr(int size) :
 }
 
 DistrictArr::DistrictArr(istream& in) { //load
-	int log_size;
-	in.read(rcastc(&log_size), sizeof(log_size));
-	district_map = {};
-	DistrictType type;
-	for (int i = 0; i < log_size; i++)
-	{
-		in.read(rcastc(&type), sizeof(type));
-		switch (type) {
-		case DistrictType::WTA:
+	try {
+		int log_size;
+		in.read(rcastc(&log_size), sizeof(log_size));
+		district_map = {};
+		DistrictType type;
+		for (int i = 0; i < log_size; i++)
 		{
-			District* new_dist_WTA = new WTADistrict(in);
-			district_map.insert(pair<int, District*>(new_dist_WTA->getId(), new_dist_WTA));
-			break;
-		}
-		
-		case DistrictType::RELATIVE:
-		{
-			District* new_dist_relative = new RelativeDistrict(in);
-			district_map.insert(pair<int, District*>(new_dist_relative->getId(), new_dist_relative));
-			break;
-		}
-			
-		}
+			in.read(rcastc(&type), sizeof(type));
+			switch (type) {
+			case DistrictType::WTA:
+			{
+				District* new_dist_WTA = new WTADistrict(in);
+				district_map.insert(pair<int, District*>(new_dist_WTA->getId(), new_dist_WTA));
+				break;
+			}
 
+			case DistrictType::RELATIVE:
+			{
+				District* new_dist_relative = new RelativeDistrict(in);
+				district_map.insert(pair<int, District*>(new_dist_relative->getId(), new_dist_relative));
+				break;
+			}
+
+			}
+		}
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 
@@ -51,106 +55,140 @@ const District& DistrictArr::getDistrict(int district_num) const
 District* DistrictArr::addDistrict(string& name, int district_id, int electors, DistrictType type)// pay attention: when you create the new arr, you are creating a new DistrictPtr* and NOT DistritctArr.
 //so 1) dont delete existing arr, just its DistrictPtr* and 2) reassing just the DistrictPtr*
 {
-	District* new_district = nullptr;
-	if (type == WTA) {
-		new_district = new WTADistrict(name, district_id, electors);
-
+	try {
+		District* new_district = nullptr;
+		if (type == WTA) {
+			new_district = new WTADistrict(name, district_id, electors);
+		}
+		if (type == RELATIVE) {
+			new_district = new RelativeDistrict(name, district_id, electors);
+		}
+		district_map.insert(pair<int, District*>(district_id, new_district));
+		return new_district;
 	}
-	if (type == RELATIVE) {
-		new_district = new RelativeDistrict(name, district_id, electors);
+	catch (bad_alloc& ex)
+	{
+		throw;
 	}
-
-	district_map.insert(pair<int, District*>(district_id, new_district));
-	return new_district;
 }
 
-int DistrictArr::addCitizen(string& name, int id, int birthyear, int district_id)
+void DistrictArr::addCitizen(string& name, int id, int birthyear, int district_id)
 {
 	if (district_map.find(district_id) == district_map.end())
-		return 400; //No District with this id! should be throw
-	for (auto elem : district_map)//Validates
+		throw "No District with this id";
+	for (auto elem : district_map)
 	{
 		if (elem.second->getCitizenArr().citizen_map.find(id) != elem.second->getCitizenArr().citizen_map.end())
-			return 100; //Citizen already exists!- Should be turned to throw!
+			throw "Citizen already exists";
 	}
 	district_map.find(district_id)->second->addCitizen(name, id, birthyear);
 }
 
 void DistrictArr::addParty(const Party* partynum)
 {
-	for (auto elem: district_map) {
-		elem.second->addParty(partynum);
+	try {
+		for (auto elem : district_map) {
+			elem.second->addParty(partynum);
+		}
+	}
+	catch (...) {
+		throw;
 	}
 }
 
-int DistrictArr::addVote(int party_num, int id)
+void DistrictArr::addVote(int party_num, int id)
 {
-	int vote_status;
-	for (auto elem : district_map)
-	{
-		vote_status = elem.second->addVote(party_num, id);
-		if (vote_status == 200)
-			return 200;
-		if (vote_status == 100) //already voted!
-			return 100;
+	try {
+		int vote_status;
+		for (auto elem : district_map)
+		{
+			elem.second->addVote(party_num, id);
+		}
 	}
-	return 400; //No citizen with this id!
+	catch (...) {
+		throw;
+	}
 }
 
-int DistrictArr::addRep(int party_num, int id, int district_id)
+void DistrictArr::addRep(int party_num, int id, int district_id)
 {
-	return district_map.find(district_id)->second->addRep(party_num);
+	try {
+		district_map.find(district_id)->second->addRep(party_num);
+	}
+	catch (...) {
+		throw;
+	}
 }
 
 void DistrictArr::saveDistricts(ostream& out)const
 {
-	out.write(rcastcc(district_map.size()), sizeof(int));
-	for (auto elem: district_map) {
-		elem.second->save(out);
+	try {
+		out.write(rcastcc(district_map.size()), sizeof(int));
+		for (auto elem : district_map) {
+			elem.second->save(out);
+		}
+	}
+	catch (ostream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 
 void DistrictArr::saveVotes(ostream& out)const
 {
-	out.write(rcastcc(district_map.size()), sizeof(int));
-	for (auto elem: district_map) {
-		elem.second->saveVotes(out);
+	try {
+		out.write(rcastcc(district_map.size()), sizeof(int));
+		for (auto elem : district_map) {
+			elem.second->saveVotes(out);
+		}
+	}
+	catch (ostream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 
 void DistrictArr::load(istream& in)
 {
-	int loaded_size;
-	in.read(rcastc(&loaded_size), sizeof(loaded_size));
-	DistrictType type;
-	district_map.clear();//overrun the old 
-	for (int i = 0; i < loaded_size; i++)
-	{
-		in.read(rcastc(&type), sizeof(type));
-		switch (type) {
-		case DistrictType::WTA:
+	try {
+		int loaded_size;
+		in.read(rcastc(&loaded_size), sizeof(loaded_size));
+		DistrictType type;
+		district_map.clear();//overrun the old 
+		for (int i = 0; i < loaded_size; i++)
 		{
-			District* new_dist_WTA = new WTADistrict(in);
-			district_map.insert(pair<int, District*>(new_dist_WTA->getId(), new_dist_WTA));
-			break;
+			in.read(rcastc(&type), sizeof(type));
+			switch (type) {
+			case DistrictType::WTA:
+			{
+				District* new_dist_WTA = new WTADistrict(in);
+				district_map.insert(pair<int, District*>(new_dist_WTA->getId(), new_dist_WTA));
+				break;
+			}
+
+			case DistrictType::RELATIVE:
+			{
+				District* new_dist_relative = new RelativeDistrict(in);
+				district_map.insert(pair<int, District*>(new_dist_relative->getId(), new_dist_relative));
+				break;
+			}
+			}
 		}
-			
-		case DistrictType::RELATIVE:
-		{
-			District* new_dist_relative = new RelativeDistrict(in);
-			district_map.insert(pair<int, District*>(new_dist_relative->getId(), new_dist_relative));
-			break;
-		}
-		}
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 
 void DistrictArr::link(istream& in, const PartyArr& party_map)
 {
-	int votes_arr_size;
-	in.read(rcastc(&votes_arr_size), sizeof(votes_arr_size));
-	for (auto elem: district_map) {
-	elem.second->link(in, party_map);
+	try {
+		int votes_arr_size;
+		in.read(rcastc(&votes_arr_size), sizeof(votes_arr_size));
+		for (auto elem : district_map) {
+			elem.second->link(in, party_map);
+		}
+	}
+	catch (istream::failure& ex) {
+		throw("Exception opening/reading/closing file");
 	}
 }
 
