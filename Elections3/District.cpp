@@ -20,7 +20,13 @@ District::District(istream& in) //load
 		in.read(rcastc(&electors), sizeof(electors));
 		in.read(rcastc(&total_votes), sizeof(total_votes));
 		in.read(rcastc(&voting_percent), sizeof(voting_percent));
-		in.read(rcastc(&name), sizeof(name));
+		int len;
+		in.read(rcastc(&len), sizeof(int));
+		char* temp = new char[len + 2];
+		in.read(rcastc(temp), len);
+		temp[len] = '\0';
+		name = temp;
+		delete[] temp;
 		citizen_arr.load(in, this);
 	}
 	catch (istream::failure& ex) {
@@ -126,10 +132,10 @@ void District::addParty(const Party* partynum)
 void District::addVote(int party_num, int id)
 {
 	if (citizen_arr.citizen_map.find(id) == citizen_arr.citizen_map.end())
-		throw "No citizen with this id";
+		throw invalid_argument("No citizen with this id");
 	Citizen* citizen = citizen_arr.citizen_map.find(id)->second;
 	if (citizen->getIfVoted())
-		throw "This citizen has already voted";
+		throw invalid_argument("This citizen has already voted");
 
 	citizen->setIfVoted(true);
 	votes_arr.addVote(party_num);
@@ -188,7 +194,9 @@ void District::save(ostream& out) const
 		out.write(rcastcc(&electors), sizeof(electors));
 		out.write(rcastcc(&total_votes), sizeof(total_votes));
 		out.write(rcastcc(&voting_percent), sizeof(voting_percent));
-		out.write(rcastcc(&name), sizeof(name));
+		int len = name.size();
+		out.write(rcastcc(&len), sizeof(int));
+		out.write(rcastcc(&name[0]), len);
 		citizen_arr.save(out);
 	}
 	catch (ostream::failure& ex) {
@@ -224,7 +232,13 @@ void District::load(istream& in)
 		in.read(rcastc(&electors), sizeof(electors));
 		in.read(rcastc(&total_votes), sizeof(total_votes));
 		in.read(rcastc(&voting_percent), sizeof(voting_percent));
-		in.read(rcastc(&name), sizeof(name));
+		int len;
+		in.read(rcastc(&len), sizeof(int));
+		char* temp = new char[len + 2];
+		in.read(rcastc(temp), len);
+		temp[len] = '\0';
+		name = temp;
+		delete[] temp;
 		citizen_arr.load(in, this);
 	}
 	catch (istream::failure& ex) {

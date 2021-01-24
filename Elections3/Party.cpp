@@ -18,7 +18,13 @@ Party::Party(istream& in, DistrictArr& district_map) //load
 	int leader_id;
 	in.read(rcastc(&leader_id), sizeof(int));// ignore leader_id
 	leader = district_map.getCitizen(leader_id);
-	in.read(rcastc(&name), sizeof(name));
+	int len;
+	in.read(rcastc (&len), sizeof(int));
+	char* temp = new char[len + 2];
+	in.read(rcastc(temp), len);
+	temp[len] = '\0';
+	name = temp;
+	delete[] temp;
 
 	reps_by_district.load(in, district_map);
 
@@ -102,8 +108,13 @@ void Party::save(ostream& out)
 	out.write(rcastcc(&electors_won), sizeof(electors_won));
 	int leader_id = leader->getID();
 	out.write(rcastcc(&leader_id), sizeof(int));
-	out.write(rcastcc(&name), sizeof(name));
+
+	int len = name.size();
+	out.write(rcastcc (&len), sizeof(int));
+	out.write(rcastcc (&name[0]), len);
+
 	reps_by_district.save(out);
+
 
 
 	if (out.good() == false) {

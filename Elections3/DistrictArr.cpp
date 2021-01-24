@@ -50,6 +50,9 @@ const District& DistrictArr::getDistrict(int district_num) const
 {
 	if(district_map.find(district_num) == district_map.end())
 		throw invalid_argument("No District with this ID");
+	else {
+		return *district_map.find(district_num)->second;
+	}
 }
 
 District* DistrictArr::addDistrict(string& name, int district_id, int electors, DistrictType type)// pay attention: when you create the new arr, you are creating a new DistrictPtr* and NOT DistritctArr.
@@ -75,11 +78,11 @@ District* DistrictArr::addDistrict(string& name, int district_id, int electors, 
 void DistrictArr::addCitizen(string& name, int id, int birthyear, int district_id)
 {
 	if (district_map.find(district_id) == district_map.end())
-		throw "No District with this id";
+		throw invalid_argument("No District with this id");
 	for (auto elem : district_map)
 	{
 		if (elem.second->getCitizenArr().citizen_map.find(id) != elem.second->getCitizenArr().citizen_map.end())
-			throw "Citizen already exists";
+			throw invalid_argument("Citizen already exists");
 	}
 	district_map.find(district_id)->second->addCitizen(name, id, birthyear);
 }
@@ -104,8 +107,8 @@ void DistrictArr::addVote(int party_num, int id)
 			elem.second->addVote(party_num, id);
 			return;
 		}
-		catch (char* ex) {
-			if (ex == "This citizen has already voted") {
+		catch (exception& ex) {
+			if (ex.what() == "This citizen has already voted") {
 				throw ex;
 			}
 		}
@@ -129,7 +132,8 @@ void DistrictArr::addRep(int party_num, int id, int district_id)
 void DistrictArr::saveDistricts(ostream& out)const
 {
 	try {
-		out.write(rcastcc(district_map.size()), sizeof(int));
+		int size = district_map.size();
+		out.write(rcastcc(&size), sizeof(int));
 		for (auto elem : district_map) {
 			elem.second->save(out);
 		}
@@ -142,7 +146,8 @@ void DistrictArr::saveDistricts(ostream& out)const
 void DistrictArr::saveVotes(ostream& out)const
 {
 	try {
-		out.write(rcastcc(district_map.size()), sizeof(int));
+		int size = district_map.size();
+		out.write(rcastcc(&size), sizeof(int));
 		for (auto elem : district_map) {
 			elem.second->saveVotes(out);
 		}

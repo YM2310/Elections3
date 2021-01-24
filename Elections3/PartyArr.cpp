@@ -118,6 +118,7 @@ void PartyArr::addElectoralVotes(int party_num, int electors)
 		if (party->getPartyNum() == party_num)
 		{
 			party->addElectors(electors);
+			return;
 		}
 	}
 	throw invalid_argument("Party doesnt exist");

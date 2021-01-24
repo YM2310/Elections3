@@ -29,7 +29,13 @@ Citizen::Citizen(istream& in, District* dist) //load
 {
 	try {
 		this->district = dist;
-		in.read(rcastc(&name), sizeof(name));
+		int len;
+		in.read(rcastc(&len), sizeof(int));
+		char* temp = new char[len + 2];
+		in.read(rcastc(temp), len);
+		temp[len] = '\0';
+		name = temp;
+		delete[] temp;
 		in.read(rcastc(&id), sizeof(id));
 		in.read(rcastc(&birth_year), sizeof(birth_year));
 		in.read(rcastc(&voted), sizeof(voted));
@@ -82,7 +88,9 @@ ostream& operator<<(ostream& os, const Citizen& citizen) // to print citizen
 void Citizen::save(ostream& out) const
 {
 	try {
-		out.write(rcastcc(&name), sizeof(name));
+		int len = name.size();
+		out.write(rcastcc(&len), sizeof(int));
+		out.write(rcastcc(&name[0]), len);
 		out.write(rcastcc(&id), sizeof(id));
 		out.write(rcastcc(&birth_year), sizeof(birth_year));
 		out.write(rcastcc(&voted), sizeof(voted));

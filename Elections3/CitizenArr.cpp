@@ -79,7 +79,8 @@ const CitizenArr& CitizenArr::operator=(const CitizenArr origin) //Asked althoug
 void CitizenArr::save(ostream& out) const
 {
 	try {
-		out.write(rcastcc(citizen_map.size()), sizeof(int));
+		int size = citizen_map.size();
+		out.write(rcastcc(&size), sizeof(int));
 		map<int, Citizen*>::iterator it;
 		for (auto elem : citizen_map)
 		{
