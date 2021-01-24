@@ -60,7 +60,13 @@ float District::getVotingPercentage() const
 
 const Citizen* District::getCitizen(int id) const
 {
-	return citizen_arr.citizen_map.find(id)->second;
+	auto iter = citizen_arr.citizen_map.find(id);
+	if (iter == citizen_arr.citizen_map.end()) {
+		throw invalid_argument("Citizen doesnt exist");
+	}
+	else {
+		return iter->second;
+	}
 }
 
 int District::getTotalVotes() const
@@ -120,7 +126,7 @@ void District::addParty(const Party* partynum)
 void District::addVote(int party_num, int id)
 {
 	if (citizen_arr.citizen_map.find(id) == citizen_arr.citizen_map.end())
-		throw "No citizen with this id";;
+		throw "No citizen with this id";
 	Citizen* citizen = citizen_arr.citizen_map.find(id)->second;
 	if (citizen->getIfVoted())
 		throw "This citizen has already voted";
@@ -136,7 +142,7 @@ void District::addRep(int party_num)
 	try {
 		votes_arr.addRep(party_num);
 	}
-	catch (...){
+	catch (...) {
 		throw;
 	}
 }
@@ -259,7 +265,7 @@ ostream& District::printDistrict(ostream& os) const
 
 ostream& District::printCitizens(ostream& os) const
 {
-	for (auto citizen: citizen_arr.citizen_map)//in citizenArr
+	for (auto citizen : citizen_arr.citizen_map)//in citizenArr
 	{
 		os << citizen.second << endl
 			<< "***********************************" << endl;

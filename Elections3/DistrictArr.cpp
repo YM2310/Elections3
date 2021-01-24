@@ -98,16 +98,22 @@ void DistrictArr::addParty(const Party* partynum)
 
 void DistrictArr::addVote(int party_num, int id)
 {
-	try {
-		int vote_status;
-		for (auto elem : district_map)
-		{
+	for (auto elem : district_map)
+	{
+		try {
 			elem.second->addVote(party_num, id);
+			return;
 		}
+		catch (char* ex) {
+			if (ex == "This citizen has already voted") {
+				throw ex;
+			}
+		}
+		
 	}
-	catch (...) {
-		throw;
-	}
+	throw "No citizen with this id";
+	
+
 }
 
 void DistrictArr::addRep(int party_num, int id, int district_id)
@@ -192,10 +198,17 @@ void DistrictArr::link(istream& in, const PartyArr& party_map)
 	}
 }
 
-const Citizen* DistrictArr::getCitizen(int id, int district_num)const
+const Citizen* DistrictArr::getCitizen(int id, int district_num)const 
 {
+	if (district_num == -1) {
+		for (auto& dist : district_map) {
+			try { return dist.second->getCitizen(id); }
+			catch (...) {};
+		}
+		throw invalid_argument("Citizen not found");
+	}
 	if (district_map.find(district_num)!= district_map.end()) {
-		return district_map.find(district_num)->second->getCitizen(id);// should throw if no citiz with this id
+		return district_map.find(district_num)->second->getCitizen(id);
 	}
 	else
 		throw invalid_argument("No District with this ID");
@@ -203,11 +216,11 @@ const Citizen* DistrictArr::getCitizen(int id, int district_num)const
 
 ostream& operator<<(ostream& os, const DistrictArr& arr) //printing citizens
 {
-	for (auto elem: arr.district_map)// moving in DistArr
+	for (auto& elem: arr.district_map)// moving in DistArr
 	{
-		for (auto citizen: elem.second->getCitizenArr().citizen_map)//in citizenArr
+		for (auto& citizen: elem.second->getCitizenArr().citizen_map)//in citizenArr
 		{
-			os << citizen.second << endl
+			os << *citizen.second << endl
 				<< "***********************************" << endl;
 		}
 	}
@@ -218,6 +231,6 @@ void DistrictArr::printDistricts() const
 {
 	for (auto elem : district_map)
 	{
-		cout << elem.second << endl;
+		cout << *elem.second << endl;
 	}
 }

@@ -20,6 +20,7 @@ void RepsArr::addRep(const Citizen* rep, int district_id)
 	for (auto& reps_of_dist : reps) {
 		if (reps_of_dist.getDistrictNum() == district_id) {
 			reps_of_dist.addCitizenToArr(rep);
+			return;
 		}
 	}
 	throw invalid_argument("district doesnt exist");
