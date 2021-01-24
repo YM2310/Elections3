@@ -26,7 +26,6 @@
     <ClCompile Include="DistrictArr.cpp" />
     <ClCompile Include="DistrictPtr.cpp" />
     <ClCompile Include="DistrictVotes.cpp" />
-    <ClCompile Include="DynamicArray.h" />
     <ClCompile Include="Election.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -49,6 +48,7 @@
     <ClInclude Include="DistrictArr.h" />
     <ClInclude Include="DistrictPtr.h" />
     <ClInclude Include="DistrictVotes.h" />
+    <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="Election.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="myString.h" />

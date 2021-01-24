@@ -18,7 +18,7 @@ DistrictVotesArr::DistrictVotesArr(const DistrictVotesArr& origin) : votes_arr(o
 		}
 	}
 	catch (bad_alloc& ex) {
-		throw;
+		throw ex;
 	}
 }
 

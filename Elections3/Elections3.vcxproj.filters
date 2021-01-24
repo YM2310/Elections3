@@ -111,9 +111,6 @@
     <ClCompile Include="Election.cpp">
       <Filter>Election\Source</Filter>
     </ClCompile>
-    <ClCompile Include="DynamicArray.h">
-      <Filter>General\Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="QuickSort.h">
       <Filter>General\Header Files</Filter>
     </ClCompile>
@@ -175,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="Election.h">
       <Filter>Election\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicArray.h">
+      <Filter>General\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

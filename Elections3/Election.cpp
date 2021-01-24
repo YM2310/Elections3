@@ -43,7 +43,7 @@ Election::Election(istream& in) //load
 
 Election::~Election()
 {
-	//party_arr.clearParties();
+	party_arr.clearParties();
 }
 
 string Election::getDate()const
