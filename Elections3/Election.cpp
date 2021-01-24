@@ -23,7 +23,13 @@ Election::Election()
 Election::Election(istream& in) //load
 {
 	try {
-		in.read(rcastc(&date), sizeof(date));
+		int len;
+		in.read(rcastc(&len), sizeof(int));
+		char* temp = new char[len + 2];
+		in.read(rcastc(temp), len);
+		temp[len] = '\0';
+		date = temp;
+		delete[] temp;
 		in.read(rcastc(&new_party_id), sizeof(new_party_id));
 		in.read(rcastc(&new_district_id), sizeof(new_district_id));
 		district_arr.load(in);
@@ -37,7 +43,7 @@ Election::Election(istream& in) //load
 
 Election::~Election()
 {
-
+	//party_arr.clearParties();
 }
 
 string Election::getDate()const
@@ -181,7 +187,9 @@ void Election::checkReps() const// check if there are enough representatives
 void Election::save(ostream& out) const
 {
 	try {
-		out.write(rcastcc(&date), sizeof(date));
+		int len = date.size();
+		out.write(rcastcc(&len), sizeof(int));
+		out.write(rcastcc(&date[0]), len);
 		out.write(rcastcc(&new_party_id), sizeof(new_party_id));
 		out.write(rcastcc(&new_district_id), sizeof(new_district_id));
 		district_arr.saveDistricts(out);

@@ -29,6 +29,7 @@ PartyArr::PartyArr(istream& in, DistrictArr& district_map)// load
 
 PartyArr::~PartyArr()
 {
+	
 
 }
 
@@ -36,6 +37,7 @@ void PartyArr::clearParties()
 {
 	for (auto partyptr : party_arr) {
 		partyptr.deleteParty();
+		partyptr.setPtr(nullptr);
 	}
 }
 

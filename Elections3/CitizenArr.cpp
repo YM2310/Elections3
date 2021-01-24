@@ -31,6 +31,9 @@ CitizenArr::CitizenArr(istream& in, District* dist) //load
 
 CitizenArr::~CitizenArr()
 {
+	for (auto elem : citizen_map) {
+		delete elem.second;
+	}
 	citizen_map.clear();
 }
 

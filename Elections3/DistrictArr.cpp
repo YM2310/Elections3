@@ -43,6 +43,9 @@ DistrictArr::DistrictArr(istream& in) { //load
 
 DistrictArr::~DistrictArr()
 {
+	for (auto elem : district_map) {
+		delete elem.second;
+	}
 	district_map.clear();
 }
 
