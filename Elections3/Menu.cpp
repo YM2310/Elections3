@@ -99,6 +99,7 @@ int getChoice() {
 		while (res > 12 || res < 1) {
 			cout << "invalid input; please enter a number between 1-12" << endl;
 			cin >> choice;
+			res = choice - '0';
 		}
 		cin.ignore();
 		return (res);
