@@ -55,7 +55,7 @@ string dateInput() {
 	}
 	catch (exception& ex)
 	{
-		cout << "ERROR: " << ex.what() << endl; 
+		cout << "ERROR: " << ex.what() << endl;
 		dateInput();
 	}
 }
@@ -90,16 +90,23 @@ void mainMenu(Election* elections)
 
 int getChoice() {
 	cout << "Please enter number according to the main list above: " << endl;
-	int choice;
+	char choice;
 	cin >> choice;
-	if (choice == 10)
-		return 10;
-	while (choice > 12 || choice < 1) {
-		cout << "invalid input; please enter a number between 1-12" << endl;
-		cin >> choice;
+	if (isdigit(choice)) {
+		int res = choice - '0';
+		if (res == 10)
+			return 10;
+		while (res > 12 || res < 1) {
+			cout << "invalid input; please enter a number between 1-12" << endl;
+			cin >> choice;
+		}
+		cin.ignore();
+		return (res);
 	}
-	cin.ignore();
-	return choice;
+	else {
+		cout << "invalid input; please enter a number between 1-12" << endl;
+		getChoice();
+	}
 }
 
 void superSwitch(int choice, Election* elections) {
@@ -226,7 +233,7 @@ void addRep(Election* elections) {
 		elections->addRep(party_num, rep_id, district_num); //catch: "Citizen not found" or "This citizen is already a representative"
 		cout << "Rep Added" << endl;
 	}
-	catch(exception& ex){
+	catch (exception& ex) {
 		cout << "ERROR: " << ex.what() << endl;
 	}
 	catch (string& msg) {
@@ -289,7 +296,7 @@ void results(Election* elections) {
 		elections->checkReps(); //catch: "Not enough representatives"
 		elections->printResults(cout);
 	}
-	catch (string& msg) 
+	catch (string& msg)
 	{
 		cout << msg << endl;
 	}
@@ -333,7 +340,7 @@ void saveElections(const Election& elections) {
 	}
 }
 
-Election* loadElections(Election * election) {
+Election* loadElections(Election* election) {
 	try {
 		string name;
 		cout << "enter filename" << endl;
@@ -352,7 +359,7 @@ Election* loadElections(Election * election) {
 		}
 		infile.close();
 		return new_elections;
-		}
+	}
 	catch (istream::failure& ex) {
 		cout << "ERROR: " << ex.what() << endl;
 	}
@@ -385,7 +392,7 @@ void checkDate(const string& date)
 	}
 	int y1 = date[6] - '0', y2 = date[7] - '0', y3 = date[8] - '0', y4 = date[9] - '0';
 	int year = y1 * 1000 + y2 * 100 + y3 * 10 + y4;
-	if(mo==2 && day>28)
+	if (mo == 2 && day > 28)
 		throw invalid_argument("Not a valid date. In February no more than 28 days ");
 	if (0 < day < 32 && 0 < mo < 13 && 0 < year < 9999)
 		return;
