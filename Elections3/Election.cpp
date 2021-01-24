@@ -39,6 +39,10 @@ Election::Election(istream& in) //load
 	catch (istream::failure& ex) {
 		throw("Exception opening/reading/closing file");
 	}
+	catch (std::bad_alloc& ba)
+	{
+		throw ba;
+	}
 }
 
 Election::~Election()

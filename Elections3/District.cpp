@@ -184,7 +184,7 @@ void District::calculateReps()
 	{
 		votes_arr[i % votes_arr.getLogSize()].reps_num++;// mod so it will go back to 1 if more reps left than parties exist
 	}
-	quickSort(votes_arr.begin(), votes_arr.end() - 1, DistrictVotesArr::cmp());
+	quickSort(votes_arr.begin(), votes_arr.end() - 1, DistrictVotesArr::cmpDistrictVotes());
 }
 
 void District::save(ostream& out) const
@@ -244,6 +244,11 @@ void District::load(istream& in)
 	catch (istream::failure& ex) {
 		throw("Exception opening/reading/closing file");
 	}
+	catch (std::bad_alloc& ba)
+	{
+		throw ba;
+	}
+
 }
 
 

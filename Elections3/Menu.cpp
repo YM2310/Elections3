@@ -26,7 +26,11 @@ int preMenu() //The first menu- first we ask if the use wants to load / create n
 		choice = getChoice();
 		if (choice == 1)
 		{
-			elections = new RegularElection(date);
+			try { elections = new RegularElection(date); }
+			catch (std::bad_alloc& ba)
+			{
+				std::cerr << "bad_alloc caught: " << ba.what() << '\n';
+			}
 		}
 		else if (choice == 2)
 		{
@@ -37,7 +41,11 @@ int preMenu() //The first menu- first we ask if the use wants to load / create n
 				cin >> input;
 			} while (!isNum(input));
 			electors = stoi(input);
-			elections = new SimpleElection(date, electors);
+			try { elections = new SimpleElection(date, electors); }
+			catch (std::bad_alloc& ba)
+			{
+				std::cerr << "bad_alloc caught: " << ba.what() << '\n';
+			}
 		}
 	}
 	else if (choice == 2) {  //Load election
@@ -394,16 +402,36 @@ Election* loadElections(Election* election) {
 		cout << "enter filename" << endl;
 		cin >> name;
 		ifstream infile(&name[0], ios::binary);
+		if (infile.fail()) {
+			cout << "file not found" << endl;
+		}
+		while (infile.fail()) {
+			cout << "enter filename" << endl;
+			cin >> name;
+			infile.open(&name[0], ios::binary);
+			if (infile.fail()) {
+				cout << "file not found" << endl;
+			}
+		}
 		delete election;
 		ElectionType type;
 		Election* new_elections = nullptr;
 		infile.read(rcastc(&type), sizeof(type));
 		if (type == ElectionType::REGULAR) {
-			new_elections = new RegularElection(infile);
+			try { new_elections = new RegularElection(infile); }
+			catch (std::bad_alloc& ba)
+			{
+				std::cerr << "bad_alloc caught: " << ba.what() << '\n';
+			}
+
 
 		}
 		else if (type == ElectionType::SIMPLE) {
-			new_elections = new SimpleElection(infile);
+			try { new_elections = new SimpleElection(infile); }
+			catch (std::bad_alloc& ba)
+			{
+				std::cerr << "bad_alloc caught: " << ba.what() << '\n';
+			}
 		}
 		infile.close();
 		return new_elections;

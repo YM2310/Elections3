@@ -53,7 +53,7 @@ public:
 	const DistrictVotes& operator[](int i) const { return votes_arr[i]; }
 	DistrictVotesArr& operator=(const DistrictVotesArr& origin);
 
-	class cmp {
+	class cmpDistrictVotes {
 	public:
 		bool operator()(const DistrictVotes& party_1, const DistrictVotes& party_2) const {
 			if (party_1.reps_num < party_2.reps_num)

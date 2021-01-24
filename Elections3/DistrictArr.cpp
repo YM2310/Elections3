@@ -38,6 +38,10 @@ DistrictArr::DistrictArr(istream& in) { //load
 	catch (istream::failure& ex) {
 		throw("Exception opening/reading/closing file");
 	}
+	catch (std::bad_alloc& ba)
+	{
+		throw ba;
+	}
 }
 
 
@@ -192,6 +196,10 @@ void DistrictArr::load(istream& in)
 	}
 	catch (istream::failure& ex) {
 		throw("Exception opening/reading/closing file");
+	}
+	catch (std::bad_alloc& ba)
+	{
+		throw ba;
 	}
 }
 

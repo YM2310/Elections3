@@ -12,22 +12,27 @@ Party::Party(string _name, const Citizen* _leader, int _party_num)
 
 Party::Party(istream& in, DistrictArr& district_map) //load
 {
-	in.read(rcastc(&party_num), sizeof(party_num));
-	in.read(rcastc(&votes_got), sizeof(votes_got));
-	in.read(rcastc(&electors_won), sizeof(electors_won));
-	int leader_id;
-	in.read(rcastc(&leader_id), sizeof(int));// ignore leader_id
-	leader = district_map.getCitizen(leader_id);
-	int len;
-	in.read(rcastc (&len), sizeof(int));
-	char* temp = new char[len + 2];
-	in.read(rcastc(temp), len);
-	temp[len] = '\0';
-	name = temp;
-	delete[] temp;
+	try {
+		in.read(rcastc(&party_num), sizeof(party_num));
+		in.read(rcastc(&votes_got), sizeof(votes_got));
+		in.read(rcastc(&electors_won), sizeof(electors_won));
+		int leader_id;
+		in.read(rcastc(&leader_id), sizeof(int));// ignore leader_id
+		leader = district_map.getCitizen(leader_id);
+		int len;
+		in.read(rcastc(&len), sizeof(int));
+		char* temp = new char[len + 2];
+		in.read(rcastc(temp), len);
+		temp[len] = '\0';
+		name = temp;
+		delete[] temp;
 
-	reps_by_district.load(in, district_map);
-
+		reps_by_district.load(in, district_map);
+	}
+	catch (std::bad_alloc& ba)
+	{
+		throw ba;
+	}
 	if (in.good()==false) {
 		name.~string();
 		reps_by_district.~RepsArr();

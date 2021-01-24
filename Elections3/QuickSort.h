@@ -19,7 +19,7 @@ int distance(Iterator left, Iterator right) {
 
 template <class Iterator, class Compare>
 void quickSort(Iterator left, Iterator right, const Compare& cmp) {
-	if (right - left > 1)
+	if (right - left > 0)
 	{
 		Iterator pivot = partition(left, right, cmp);
 		quickSort(left, pivot - 1, cmp);

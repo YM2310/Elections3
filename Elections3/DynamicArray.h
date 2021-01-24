@@ -115,6 +115,19 @@ public:
 	const T& operator[](int i) const { return _arr[i]; }
 	T& operator[](int i) { return _arr[i]; }
 
+	T& at(int i) {
+		if (i < _logicalSize)
+			return _arr[i];
+		else
+			throw out_of_range("out of range")
+	}
+	const T& at(int i) const  {
+		if (i < _logicalSize)
+		return _arr[i]; 
+		else
+			throw out_of_range("out of range")
+	}
+
 	void push_back(const T& value) {
 		if (_logicalSize == _physicalSize)
 			resize();
