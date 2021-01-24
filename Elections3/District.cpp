@@ -135,7 +135,7 @@ void District::addVote(int party_num, int id)
 		throw invalid_argument("No citizen with this id");
 	Citizen* citizen = citizen_arr.citizen_map.find(id)->second;
 	if (citizen->getIfVoted())
-		throw invalid_argument("This citizen has already voted");
+		throw true;
 
 	citizen->setIfVoted(true);
 	votes_arr.addVote(party_num);

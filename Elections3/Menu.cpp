@@ -6,7 +6,7 @@
 using namespace std;
 enum class ElectionType { REGULAR = 1, SIMPLE = 2 };
 enum choice { district = 1, citizen = 2, party = 3, rep = 4, disp_districts = 5, disp_citizens = 6, disp_partys = 7, set_vote = 8, disp_results = 9, save = 11, load = 12 };
-
+enum  Months{JAN=1,FEB,MAR,APR,MAY,JUN,JUL,AUG,SEP,OCT,NOV,DEC};
 int preMenu() //The first menu- first we ask if the use wants to load / create new one
 {
 	Election* elections = nullptr;
@@ -30,9 +30,13 @@ int preMenu() //The first menu- first we ask if the use wants to load / create n
 		}
 		else if (choice == 2)
 		{
-			cout << "Enter number of electors: " << endl;
+			string input;
 			int electors;
-			cin >> electors;
+			do {
+				cout << "Enter number of electors: " << endl;
+				cin >> input;
+			} while (!isNum(input));
+			electors = stoi(input);
 			elections = new SimpleElection(date, electors);
 		}
 	}
@@ -46,16 +50,22 @@ int preMenu() //The first menu- first we ask if the use wants to load / create n
 
 string dateInput() {
 	try {
-		int day, month, year;
-		cout << "please enter date: " << endl;
-		cin >> day >> month >> year;
-		string date = to_string(day) + "/" + to_string(month) + "/" + to_string(year);
-		checkDate(date);//catch: "Not a valid date. 
+		string sday, smonth, syear;
+			int day, month, year;
+		do {
+			cout << "please enter date: " << endl;
+			cin >> sday >> smonth >> syear;
+		} while (!isNum(sday) || !isNum(smonth) || !isNum(syear));
+		day = stoi(sday);
+		month = stoi(smonth);
+		year = stoi(syear);
+		checkDate(day, month, year);//catch: "Not a valid date. 
+		string date = sday + "/" + smonth + "/" + syear;
 		return date;
 	}
 	catch (exception& ex)
 	{
-		cout << "ERROR: " << ex.what() << endl; 
+		cout << "ERROR: " << ex.what() << endl;
 		dateInput();
 	}
 }
@@ -88,18 +98,24 @@ void mainMenu(Election* elections)
 	cout << "Goodbye!";
 }
 
+bool isNum(string& str) {
+	for (char ch : str) {
+		if (!isdigit(ch))
+			return false;
+	}
+	return true;
+}
 int getChoice() {
 	cout << "Please enter number according to the main list above: " << endl;
-	int choice;
+	string choice;
 	cin >> choice;
-	if (choice == 10)
-		return 10;
-	while (choice > 12 || choice < 1) {
+	while (!isNum(choice) || (stoi(choice) > 12 || stoi(choice) < 1)) {
 		cout << "invalid input; please enter a number between 1-12" << endl;
 		cin >> choice;
 	}
+	int res = stoi(choice);
 	cin.ignore();
-	return choice;
+	return (res);
 }
 
 void superSwitch(int choice, Election* elections) {
@@ -129,17 +145,22 @@ void superSwitch(int choice, Election* elections) {
 
 void addDistrict(Election* elections) { //add District- only to Regular Election!
 	string name;
+	string input;
 	int num_of_reps = 0, type;
 	cout << "Please enter district's name: " << endl;
 	cin >> name;
-	cout << "Please enter number of representatives: " << endl;
-	cin >> num_of_reps;
-	cout << "Please enter type of disrict: Winner Takes All District= 1, Relative District= 2" << endl;
-	cin >> type;
-	while (num_of_reps < 1) {
-		cout << "Cant have negative number of representatives! try again. " << endl;
-		cin >> num_of_reps;
-	}
+	do {
+		cout << "Please enter number of representatives: " << endl;
+		cin >> input;
+	} while (!isNum(input) || stoi(input) < 0);
+	num_of_reps = stoi(input);
+
+	do {
+		cout << "Please enter type of disrict: Winner Takes All District= 1, Relative District= 2" << endl;
+		cin >> input;
+	} while (!isNum(input) || !(stoi(input) == 1 || stoi(input) == 2));
+	type = stoi(input);
+
 	try {
 		static_cast<RegularElection*>(elections)->addDistrict(name, num_of_reps, static_cast<DistrictType> (type));//catch:"District already exist!"
 		cout << "Added District" << endl;
@@ -161,15 +182,26 @@ void addDistrict(Election* elections) { //add District- only to Regular Election
 }
 void addCitizen(Election* elections) {
 	string name;
+	string input;
 	int id, birth_year, district_num, res;
 	cout << "Please enter name: " << endl;
 	cin >> name;
-	cout << "Please enter id: " << endl;
-	cin >> id;
-	cout << "Please enter year of birth (yyyy): " << endl;
-	cin >> birth_year;
-	cout << "Please enter  number of district: " << endl;
-	cin >> district_num;
+	do {
+		cout << "Please enter id: " << endl;
+		cin >> input;
+	} while (!isNum(input));
+	id = stoi(input);
+	do {
+		cout << "Please enter year of birth (yyyy): " << endl;
+		cin >> input;
+	} while (!isNum(input)||stoi(input)<0);
+	birth_year = stoi(input);
+
+	do {
+		cout << "Please enter  number of district: " << endl;
+		cin >> input;
+	} while (!isNum(input));
+	district_num = stoi(input);
 	try {
 		elections->addCitizen(name, id, birth_year, district_num); //catch: "No District with this number!"/"Citizen already exist!"/"Invalid ID"/"Invalid Birth Year"
 		cout << "Added citizen" << endl;
@@ -191,11 +223,16 @@ void addCitizen(Election* elections) {
 
 void addParty(Election* elections) {
 	string name;
+	string input;
 	int id_pres, res;
 	cout << "Please enter name of party: " << endl;
 	cin >> name;
-	cout << "Please enter id of running to presidency: " << endl;
-	cin >> id_pres;
+	do {
+		cout << "Please enter id of running to presidency: " << endl;
+		cin >> input;
+	} while (!isNum(input));
+	id_pres = stoi(input);
+
 	try {
 		elections->addParty(name, id_pres);//catch:"No Citizen with this ID!"/"This person is already a representative"
 		cout << "Party added" << endl;
@@ -212,13 +249,24 @@ void addParty(Election* elections) {
 }
 
 void addRep(Election* elections) {
+	string input;
 	int rep_id, party_num, district_num, res;
-	cout << "Please enter id of representative: " << endl;
-	cin >> rep_id;
-	cout << "Please enter number of party: " << endl;
-	cin >> party_num;
-	cout << "Please enter number of district: " << endl;
-	cin >> district_num;
+	do {
+		cout << "Please enter id of representative: " << endl;
+		cin >> input;
+	} while (!isNum(input));
+	rep_id = stoi(input);
+
+	do {
+		cout << "Please enter number of party: " << endl;
+		cin >> input;
+	} while (!isNum(input));
+	party_num = stoi(input);
+	do {
+		cout << "Please enter number of district: " << endl;
+		cin >> input;
+	} while (!isNum(input));
+	district_num = stoi(input);
 	try {
 		if (typeid(*elections) == typeid(RegularElection))
 			static_cast<RegularElection*>(elections)->checkDistrictExists(district_num); // catch: "District not found" 
@@ -226,7 +274,7 @@ void addRep(Election* elections) {
 		elections->addRep(party_num, rep_id, district_num); //catch: "Citizen not found" or "This citizen is already a representative"
 		cout << "Rep Added" << endl;
 	}
-	catch(exception& ex){
+	catch (exception& ex) {
 		cout << "ERROR: " << ex.what() << endl;
 	}
 	catch (string& msg) {
@@ -251,11 +299,18 @@ void printParties(Election* elections) {
 	cout << elections->getPartyArr();
 }
 void vote(Election* elections) {
+	string input;
 	int id, party_num, res;
-	cout << "Please enter id of voter: " << endl;
-	cin >> id;
-	cout << "Please enter number of party chosen: " << endl;
-	cin >> party_num;
+	do {
+		cout << "Please enter id of voter: " << endl;
+		cin >> input;
+	} while (!isNum(input));
+	id = stoi(input);
+	do {
+		cout << "Please enter number of party chosen: " << endl;
+		cin >> input;
+	} while (!isNum(input));
+	party_num = stoi(input);
 	try {
 		elections->checkPartyExists(party_num); // catch: "Party not found"
 		elections->addVote(id, party_num);// catch: "This citizen has already voted" / "Could not find the citizen"
@@ -289,7 +344,7 @@ void results(Election* elections) {
 		elections->checkReps(); //catch: "Not enough representatives"
 		elections->printResults(cout);
 	}
-	catch (string& msg) 
+	catch (string& msg)
 	{
 		cout << msg << endl;
 	}
@@ -333,7 +388,7 @@ void saveElections(const Election& elections) {
 	}
 }
 
-Election* loadElections(Election * election) {
+Election* loadElections(Election* election) {
 	try {
 		string name;
 		cout << "enter filename" << endl;
@@ -352,7 +407,7 @@ Election* loadElections(Election * election) {
 		}
 		infile.close();
 		return new_elections;
-		}
+	}
 	catch (istream::failure& ex) {
 		cout << "ERROR: " << ex.what() << endl;
 	}
@@ -371,23 +426,16 @@ Election* loadElections(Election * election) {
 	}
 }
 
-void checkDate(const string& date)
+void checkDate(int day, int month, int year)
 {
-	int day1 = date[0] - '0', day2 = date[1] - '0';
-	int day = day1 * 10 + day2;
-	int mo;
-	if (date[4] == '/')
-		mo = date[3] - '0';
-	else
-	{
-		int mo1 = date[3] - '0', mo2 = date[4] - '0';
-		mo = mo1 * 10 + mo2;
-	}
-	int y1 = date[6] - '0', y2 = date[7] - '0', y3 = date[8] - '0', y4 = date[9] - '0';
-	int year = y1 * 1000 + y2 * 100 + y3 * 10 + y4;
-	if(mo==2 && day>28)
+	if (day > 31)
+		throw invalid_argument("Not a valid date.");
+	if(month==APR|| month == JUN || month == SEP || month == NOV)
+		if(day>30)
+			throw invalid_argument("Not a valid date.");
+	if (month == FEB && day > 28)
 		throw invalid_argument("Not a valid date. In February no more than 28 days ");
-	if (0 < day < 32 && 0 < mo < 13 && 0 < year < 9999)
+	if (0 < day < 32 && 0 < month < 13 && 0 < year)
 		return;
 	else
 		throw invalid_argument("Not a valid date. Please enter date of election (format: dd/mm/yyyy ): ");

@@ -224,8 +224,17 @@ ostream& operator<<(ostream& os, const Election& elections)
 
 void Election::checkBirthYear(int _birthyear) const
 {
+	
+	std::string::const_iterator i = date.end();
+	i--;
 	int year = 0;
-	year = (date[6] * 1000 + date[7] * 100 + date[8] * 10 + date[9]) - '0';
+	int power = 1;
+	while (*i != '/') {
+		year += (*i - '0')*power;
+		power *= 10;
+		i--;
+	}
+	//year = (date[6] * 1000 + date[7] * 100 + date[8] * 10 + date[9]) - '0';
 	if (year - _birthyear < 18)
 		throw invalid_argument("Invalid birth year");
 }

@@ -2,7 +2,7 @@
 #include "SimpleElection.h"
 #include "RegularElection.h"
 
-Election* loadMenu();
+
 string dateInput();
 void mainMenu(Election* elections);// the second menu
 int preMenu(); // the first menu- for load or create new
@@ -19,4 +19,5 @@ void vote(Election* elections);
 void results(Election* elections);
 void saveElections(const Election& elections);
 Election* loadElections(Election* elections = nullptr);
-void checkDate(const string& date);
+void checkDate(int day, int month, int year);
+bool isNum(string& str);

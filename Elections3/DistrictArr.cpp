@@ -111,8 +111,11 @@ void DistrictArr::addVote(int party_num, int id)
 			return;
 		}
 		catch (exception& ex) {
-			if (ex.what() == "This citizen has already voted") {
-				throw ex;
+
+		}
+		catch (bool voted) {
+			if (voted) {
+				throw string("Already Voted!");
 			}
 		}
 		
