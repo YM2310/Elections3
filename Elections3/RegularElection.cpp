@@ -69,7 +69,7 @@ ostream& RegularElection::printResults(ostream& os) const
 	cout << "***********************************" << endl;
 	cout << "Election Type: Regular Election" << endl;
 	int chosenElectors = 0;
-	for (auto dist: district_arr.district_map)// moves in DistrctArr
+	for (auto& dist: district_arr.district_map)// moves in DistrctArr
 	{
 		os << "***********************************" << endl <<
 			"District Name: " << dist.second->getName() << endl <<

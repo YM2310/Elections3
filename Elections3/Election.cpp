@@ -131,7 +131,7 @@ void Election::addParty(string& name, int candidate_id)
 		party_arr.CheckIfRep(leader); // try
 		Party* new_party = party_arr.addParty(name, party_id, leader);
 		district_arr.addParty(new_party);
-		for (auto dist: district_arr.district_map)
+		for (auto& dist: district_arr.district_map)
 		{
 			new_party->addDistrict(dist.second);
 		}
@@ -148,7 +148,7 @@ void Election::sumElectors()
 		party_arr.initElectors();
 		int winner, electors, party_votes, i = 0;
 		DistrictVotesArr electors_arr;
-		for (auto dist : district_arr.district_map) // within dist_arr
+		for (auto& dist : district_arr.district_map) // within dist_arr
 		{
 			dist.second->calculateReps();
 			electors_arr = dist.second->getWinner();
@@ -172,7 +172,7 @@ void Election::sumElectors()
 
 void Election::checkReps() const// check if there are enough representatives
 {
-	for (auto dist : district_arr.district_map)//moves on districts
+	for (auto& dist : district_arr.district_map)//moves on districts
 	{
 		for (int n = 0; n < dist.second->getVotesArr().getLogSize(); n++)//on VotesArr
 		{

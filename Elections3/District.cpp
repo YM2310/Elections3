@@ -184,7 +184,7 @@ void District::calculateReps()
 	{
 		votes_arr[i % votes_arr.getLogSize()].reps_num++;// mod so it will go back to 1 if more reps left than parties exist
 	}
-	votes_arr.qSort();
+	quickSort(votes_arr.begin(), votes_arr.end() - 1, DistrictVotesArr::cmp());
 }
 
 void District::save(ostream& out) const
@@ -279,7 +279,7 @@ ostream& District::printDistrict(ostream& os) const
 
 ostream& District::printCitizens(ostream& os) const
 {
-	for (auto citizen : citizen_arr.citizen_map)//in citizenArr
+	for (auto& citizen : citizen_arr.citizen_map)//in citizenArr
 	{
 		os << citizen.second << endl
 			<< "***********************************" << endl;

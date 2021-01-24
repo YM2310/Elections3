@@ -35,7 +35,7 @@ PartyArr::~PartyArr()
 
 void PartyArr::clearParties()
 {
-	for (auto partyptr : party_arr) {
+	for (auto& partyptr : party_arr) {
 		partyptr.deleteParty();
 		partyptr.setPtr(nullptr);
 	}

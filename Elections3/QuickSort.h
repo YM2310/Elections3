@@ -1,4 +1,4 @@
-#include "DynamicArray.h"
+#pragma once
 template<typename Iter>
 void Swap(Iter _a, Iter _b)
 {
